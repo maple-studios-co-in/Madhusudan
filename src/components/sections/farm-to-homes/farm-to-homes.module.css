@@ -1,0 +1,252 @@
+/*
+ * "From one farm to half a million homes" — Figma 119:843 (1430 × 605.66),
+ * #5c9105 band directly above the footer.
+ *
+ * --u is one Figma px: min(100cqw / 1430, 100svh / 605.66), so the band always
+ * fits one screen. Copy keeps Figma's left anchoring; the collage (Figma
+ * container 119:857, 653.18 × 536.36, clipped) is flush with the right edge.
+ * Tiles are placed with --x / --y / --s (Figma px inside the collage).
+ *
+ * Motion: title lines, the company line (word by word) and the link rise in;
+ * the tiles snap open one after another (squares first, portrait last); where
+ * scroll timelines exist each tile rises by its own --drift into place as the
+ * band scrolls in, settling on Figma's grid.
+ */
+
+.shell {
+  container-type: inline-size;
+  width: 100%;
+  background: #5c9105;
+}
+
+.section {
+  --uw: calc(100cqw / 1430);
+  --u: min(var(--uw), calc(100svh / 605.66));
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --cream: #f4ede6;
+
+  position: relative;
+  height: calc(var(--u) * 605.66);
+  overflow: hidden;
+  background: #5c9105;
+}
+
+/* ------------------------------------------------------------------ */
+/* Copy                                                                 */
+/* ------------------------------------------------------------------ */
+
+.copy {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: calc(var(--u) * 700);
+}
+
+/* 119:844 — Geist Medium 49.8/46.28, −0.498px tracking, white */
+.title {
+  position: absolute;
+  left: calc(var(--u) * 26);
+  top: calc(var(--u) * 72);
+  margin: 0;
+  font-family: var(--font-geist), system-ui, sans-serif;
+  font-weight: 500;
+  font-size: calc(var(--u) * 49.8);
+  line-height: calc(var(--u) * 46.28);
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  text-transform: uppercase;
+  color: #fff;
+}
+
+.line {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.14em;
+  margin-bottom: -0.14em;
+}
+
+.lineInner {
+  display: block;
+  transition: translate 1s var(--ease-out);
+  transition-delay: var(--d, 0s);
+}
+
+/* 119:847 — 15px on 17.97px lines, cream, title-cased */
+.body {
+  position: absolute;
+  left: calc(var(--u) * 26);
+  top: calc(var(--u) * 242);
+  margin: 0;
+  font-family: var(--font-geist), system-ui, sans-serif;
+  font-weight: 500;
+  font-size: max(11px, calc(var(--u) * 15));
+  line-height: 1.198;
+  text-transform: capitalize;
+  color: var(--cream);
+}
+
+/* 119:848 — cream outline, beige dots; fills cream with green text on hover */
+.cta {
+  --dl-u: var(--u);
+  --dl-height: 39.24;
+  --dl-size: 11.8;
+  --dl-line: var(--cream);
+  --dl-ink: var(--cream);
+  --dl-dot: #f1efdf;
+  --dl-paper: #5c9105;
+
+  position: absolute;
+  left: calc(var(--u) * 25.44);
+  top: calc(var(--u) * 469.65);
+  transition:
+    opacity 0.8s var(--ease-out) 0.7s,
+    translate 0.8s var(--ease-out) 0.7s;
+}
+
+/* ------------------------------------------------------------------ */
+/* Collage                                                              */
+/* ------------------------------------------------------------------ */
+
+.collage {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: calc(var(--u) * 653.18);
+  height: calc(var(--u) * 536.36);
+  overflow: hidden;
+}
+
+.tile {
+  position: absolute;
+  left: calc(var(--u) * var(--x));
+  top: calc(var(--u) * var(--y));
+  width: calc(var(--u) * var(--s));
+  height: calc(var(--u) * var(--s));
+  overflow: hidden;
+  clip-path: inset(0);
+  transition: clip-path 0.9s cubic-bezier(0.65, 0, 0.25, 1);
+  transition-delay: var(--d, 0s);
+}
+
+.dark {
+  background: #414f1e;
+}
+
+.light {
+  background: #7c914c;
+}
+
+.img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: scale 1.4s var(--ease-out);
+  transition-delay: var(--d, 0s);
+}
+
+.photo:hover .img {
+  scale: 1.06;
+  transition-delay: 0s;
+}
+
+/* ------------------------------------------------------------------ */
+/* Entrances (JS marks the roots; without JS everything is visible)     */
+/* ------------------------------------------------------------------ */
+
+.copy[data-inview="false"] .lineInner {
+  translate: 0 110%;
+}
+
+.copy[data-inview="false"] .cta {
+  opacity: 0;
+  translate: 0 calc(var(--u) * 12);
+}
+
+/* each tile opens from its bottom-left corner, the photo settling inside */
+.collage[data-inview="false"] .tile {
+  clip-path: inset(100% 100% 0 0);
+}
+
+.collage[data-inview="false"] .img {
+  scale: 1.25;
+}
+
+/* The squares sit corner to corner with the photos (a pixel staircase), so the
+   drift runs on the band's timeline and ends at zero once the band's middle
+   reaches the middle of the screen: the tiles rise into Figma's exact grid. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .section {
+      view-timeline-name: --farm-to-homes;
+    }
+
+    .tile {
+      animation: assemble linear both;
+      animation-timeline: --farm-to-homes;
+      animation-range: entry 0% cover 50%;
+    }
+  }
+}
+
+@keyframes assemble {
+  from {
+    transform: translateY(calc(var(--u) * var(--drift, 20)));
+  }
+  to {
+    transform: none;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Phones / tablets (full pass later): copy, then the collage           */
+/* ------------------------------------------------------------------ */
+
+@media (max-width: 1023px) {
+  .section {
+    --u: calc(100cqw / 700);
+    height: auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .copy {
+    position: relative;
+    inset: auto;
+    width: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    padding: 48px 20px 36px;
+  }
+
+  .title,
+  .body,
+  .cta {
+    position: relative;
+    left: auto;
+    top: auto;
+  }
+
+  .title {
+    font-size: clamp(30px, 8.4cqw, 46px);
+    line-height: 0.95;
+  }
+
+  .body {
+    font-size: 13px;
+  }
+
+  .collage {
+    position: relative;
+    align-self: flex-end;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lineInner,
+  .cta,
+  .tile,
+  .img {
+    transition: none;
+  }
+}

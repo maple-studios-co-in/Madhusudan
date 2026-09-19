@@ -1,0 +1,29 @@
+.line {
+  display: block;
+  white-space: nowrap;
+}
+
+.word {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  /* room for descenders inside the clipped box */
+  padding-bottom: 0.12em;
+  margin-bottom: -0.12em;
+}
+
+.wordInner {
+  display: inline-block;
+  transition: translate 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--d, 0s);
+}
+
+:global([data-inview="false"]) .wordInner {
+  translate: 0 115%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wordInner {
+    transition: none;
+  }
+}

@@ -1,0 +1,346 @@
+/*
+ * "Freeze fast. Keep more" — Figma 103:4340 (1430 × 1367; state 2 drawn 820px
+ * lower). One pinned screen: the track is 100svh + 130svh of scroll, the stage
+ * sticks for the whole track and plays the bag → pack sweep from `--progress`
+ * (ScrollScene).
+ *
+ * --u is one Figma px: min(100cqw / 1430, 100svh / 1080). The 1430 × 1080 frame
+ * (Figma y 0–1080: title, grid, product, cards) is centred in the stage; the glow
+ * spans the full width.
+ *
+ * Glow: Figma's radial (centre 715, 363; radius 978.5) over cream #eff6e4. It is
+ * scaled by the width horizontally and by --u vertically so the corners keep
+ * Figma's tint on wide screens; the stage's last 170u blend into cream so the
+ * scene ends on the section colour as Figma's does.
+ *
+ * Scroll choreography (p = --progress):
+ *   0.00–0.20  hold on the bag      0.20–0.75  frost line sweeps down: pack above
+ *   0.75–1.00  hold on the pack     the line, bag below (shared clip box)
+ */
+
+.shell {
+  container-type: inline-size;
+  width: 100%;
+  background: #eff6e4;
+}
+
+.section {
+  position: relative;
+  background: #eff6e4;
+}
+
+.track {
+  position: relative;
+  height: 230svh;
+}
+
+.stage {
+  --uw: calc(100cqw / 1430);
+  --u: min(var(--uw), calc(100svh / 1080));
+  --top: calc((100svh - var(--u) * 1080) / 2);
+  --p: var(--progress, 0);
+  --wipe: clamp(0, calc((var(--p) - 0.2) / 0.55), 1);
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  overflow: hidden;
+  background:
+    linear-gradient(to bottom, rgba(239, 246, 228, 0) calc(100% - var(--u) * 170), #eff6e4 100%),
+    radial-gradient(
+      calc(var(--uw) * 978.5) calc(var(--u) * 978.5) at 50% calc(var(--top) + var(--u) * 363),
+      rgba(17, 86, 129, 0.54) 0%,
+      rgba(44, 106, 141, 0.5975) 12.5%,
+      rgba(72, 126, 154, 0.655) 25%,
+      rgba(128, 166, 178, 0.77) 50%,
+      rgba(183, 206, 203, 0.885) 75%,
+      #eff6e4 100%
+    ),
+    #eff6e4;
+}
+
+.frame {
+  position: absolute;
+  left: 50%;
+  top: var(--top);
+  width: calc(var(--u) * 1430);
+  height: calc(var(--u) * 1080);
+  translate: -50% 0;
+}
+
+/* Rectangle 8 (103:4342): 801px square of 4px dots every 24px, white at 55% */
+.grid {
+  position: absolute;
+  left: calc(var(--u) * 314);
+  top: calc(var(--u) * 251);
+  width: calc(var(--u) * 801);
+  height: calc(var(--u) * 801);
+  background-image: conic-gradient(
+    from 270deg at calc(var(--u) * 4) calc(var(--u) * 4),
+    rgba(255, 255, 255, 0.55) 25%,
+    transparent 0
+  );
+  background-size: calc(var(--u) * 24) calc(var(--u) * 24);
+  background-position: calc(var(--u) * 14.5) calc(var(--u) * 14.5);
+  transition: opacity 1.2s var(--ease-out);
+}
+
+/* 103:4343 — Geist SemiBold 86.748/80.617, −1.2995px tracking, centred */
+.title {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(var(--u) * 89);
+  margin: 0;
+  font-family: var(--font-geist), system-ui, sans-serif;
+  font-weight: 600;
+  font-size: calc(var(--u) * 86.748);
+  line-height: calc(var(--u) * 80.617);
+  letter-spacing: -0.015em;
+  text-align: center;
+  white-space: nowrap;
+  text-transform: uppercase;
+  color: #fff;
+}
+
+.line {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.12em;
+  margin-bottom: -0.12em;
+}
+
+.lineInner {
+  display: block;
+  transition: translate 1s var(--ease-out);
+  transition-delay: var(--d, 0s);
+}
+
+/* ------------------------------------------------------------------ */
+/* Product: bag (image 25) → pack (image 26) in one shared clip box     */
+/* ------------------------------------------------------------------ */
+
+.product {
+  position: absolute;
+  left: calc(var(--u) * 441);
+  top: calc(var(--u) * 284);
+  width: calc(var(--u) * 564.28);
+  height: calc(var(--u) * 696);
+  transition:
+    opacity 1s var(--ease-out) 0.1s,
+    translate 1.3s var(--ease-out) 0.1s;
+}
+
+.cutouts {
+  position: absolute;
+  inset: 0;
+  filter: drop-shadow(0 calc(var(--u) * 26) calc(var(--u) * 34) rgba(17, 58, 84, 0.24));
+}
+
+.bagLayer,
+.packLayer {
+  position: absolute;
+  inset: 0;
+}
+
+.bagLayer {
+  clip-path: inset(calc(var(--wipe) * 100%) 0 0 0);
+}
+
+.packLayer {
+  clip-path: inset(0 0 calc(100% - var(--wipe) * 100%) 0);
+}
+
+/* image 25: 464 × 696 at x 483 (42 into the box) */
+.bag {
+  position: absolute;
+  left: calc(var(--u) * 42);
+  top: 0;
+  width: calc(var(--u) * 464);
+  height: calc(var(--u) * 696);
+  max-width: none;
+}
+
+/* image 26: 564.28 × 674 at x 441 */
+.pack {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: calc(var(--u) * 564.28);
+  height: calc(var(--u) * 674);
+  max-width: none;
+}
+
+/* the frost line riding the sweep; only lit while it moves */
+.seal {
+  position: absolute;
+  left: -9%;
+  right: -9%;
+  top: calc(var(--wipe) * 100%);
+  height: calc(var(--u) * 64);
+  translate: 0 -50%;
+  opacity: clamp(0, calc(min(var(--wipe), 1 - var(--wipe)) * 14), 1);
+  background: radial-gradient(
+    closest-side,
+    rgba(255, 255, 255, 0.85),
+    rgba(222, 240, 248, 0.42) 42%,
+    rgba(222, 240, 248, 0) 100%
+  );
+  pointer-events: none;
+}
+
+.seal::after {
+  content: "";
+  position: absolute;
+  left: 7%;
+  right: 7%;
+  top: 50%;
+  height: 2px;
+  translate: 0 -50%;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0), #fff 16%, #fff 84%, rgba(255, 255, 255, 0));
+  box-shadow: 0 0 calc(var(--u) * 16) calc(var(--u) * 3) rgba(255, 255, 255, 0.75);
+}
+
+/* ------------------------------------------------------------------ */
+/* Glass cards (Paragraph+Overlay+OverlayBlur)                          */
+/* ------------------------------------------------------------------ */
+
+.card {
+  position: absolute;
+  box-sizing: border-box;
+  border: 1px solid #f4ede6;
+  border-radius: calc(var(--u) * 12);
+  background: rgba(255, 255, 255, 0.23);
+  -webkit-backdrop-filter: blur(calc(var(--u) * 15));
+  backdrop-filter: blur(calc(var(--u) * 15));
+  font-family: var(--font-geist), system-ui, sans-serif;
+  font-weight: 500;
+  white-space: nowrap;
+  color: #fff;
+  transition:
+    opacity 0.9s var(--ease-out),
+    translate 1.1s var(--ease-out);
+  transition-delay: var(--d, 0s);
+}
+
+.card p {
+  margin: 0;
+}
+
+/* 103:4345 — 351 × 194 at (215, 684), text block 35px in, centred vertically */
+.cardStat {
+  left: calc(var(--u) * 215);
+  top: calc(var(--u) * 684);
+  width: calc(var(--u) * 351);
+  height: calc(var(--u) * 194);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-left: calc(var(--u) * 35);
+}
+
+.statTitle {
+  font-weight: 900;
+  font-size: calc(var(--u) * 32);
+  line-height: 1.5;
+  text-transform: uppercase;
+}
+
+.statRate {
+  font-size: calc(var(--u) * 26);
+  line-height: 1.5;
+  text-transform: uppercase;
+}
+
+.statNote {
+  font-size: calc(var(--u) * 20);
+  line-height: 1.92;
+}
+
+.caps {
+  text-transform: uppercase;
+}
+
+/* 103:4348 — 331.77 × 171.47 at (863, 433), 16px title-cased copy */
+.cardProcess {
+  left: calc(var(--u) * 863);
+  top: calc(var(--u) * 433);
+  width: calc(var(--u) * 331.77);
+  height: calc(var(--u) * 171.47);
+  padding: calc(var(--u) * 25) calc(var(--u) * 25.77) 0 calc(var(--u) * 27);
+}
+
+.processText {
+  font-size: calc(var(--u) * 16);
+  line-height: 1.5;
+  text-transform: capitalize;
+}
+
+/* ------------------------------------------------------------------ */
+/* Entrances (JS marks the stage; without JS everything is visible)     */
+/* ------------------------------------------------------------------ */
+
+.stage[data-inview="false"] .lineInner {
+  translate: 0 110%;
+}
+
+.stage[data-inview="false"] .grid {
+  opacity: 0;
+}
+
+.stage[data-inview="false"] .product {
+  opacity: 0;
+  translate: 0 calc(var(--u) * 70);
+}
+
+.stage[data-inview="false"] .card {
+  opacity: 0;
+  translate: 0 calc(var(--u) * 34);
+}
+
+/* depth while pinned: product and cards drift apart a little */
+@media (prefers-reduced-motion: no-preference) {
+  .product {
+    transform: translateY(calc((0.5 - var(--p)) * var(--u) * 40));
+  }
+
+  .cardStat {
+    transform: translateY(calc((0.5 - var(--p)) * var(--u) * 72));
+  }
+
+  .cardProcess {
+    transform: translateY(calc((var(--p) - 0.5) * var(--u) * 44));
+  }
+
+  .grid {
+    transform: translateY(calc((0.5 - var(--p)) * var(--u) * 18));
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Phones / tablets (full pass later): same scene, cards pulled inside  */
+/* ------------------------------------------------------------------ */
+
+@media (max-width: 1023px) {
+  .stage {
+    --u: min(calc(100cqw / 860), calc(100svh / 1080));
+  }
+
+  .cardStat {
+    left: calc(var(--u) * 300);
+  }
+
+  .cardProcess {
+    left: calc(var(--u) * 800);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lineInner,
+  .grid,
+  .product,
+  .card {
+    transition: none;
+  }
+}

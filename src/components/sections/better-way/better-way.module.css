@@ -1,0 +1,383 @@
+/*
+ * "How much could you grow" — Figma 68:3808 (1430 wide, gradient section).
+ *
+ * One Figma px per layer:
+ *   --u1 = min(width scale, 100svh / 1045)   copy: title, pitch, cards (+ phone corn)
+ *   --u2 = min(width scale, 100svh / 804)    smcagri wordmark band
+ * Figma's first screen is 1296px tall; to fit one screen without shrinking the
+ * copy the cards sit 273px higher (800 vs 1073). Horizontal positions keep
+ * Figma anchors: title from the left edge, pitch from the right, cards across.
+ *
+ * Desktop: the copy is the layer that leaves upwards inside CornDipScene's
+ * pinned stage (which also draws the corn and the film). Phones: static screen,
+ * then the film below (.dip).
+ *
+ * The section clips with `overflow: clip` — `hidden` would make it a scroll
+ * container and break the sticky stage.
+ */
+
+.shell {
+  container-type: inline-size;
+  width: 100%;
+}
+
+.section {
+  --uw: calc(100cqw / 1430);
+  --u1: min(var(--uw), calc(100svh / 1045));
+  --u2: min(var(--uw), calc(100svh / 804));
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --green: #5c9105;
+  --olive: #4c5b20;
+  --olive-deep: #404f1d;
+  --card: #f4ede6;
+
+  position: relative;
+  overflow: clip;
+  background: linear-gradient(222.73deg, #eff6e4 0%, #99c71f 100%);
+}
+
+/* the pinned screen keeps Figma's gradient still while the copy moves */
+.stage {
+  background: linear-gradient(222.73deg, #eff6e4 0%, #99c71f 100%);
+}
+
+/* ------------------------------------------------------------------ */
+/* Copy layer                                                           */
+/* ------------------------------------------------------------------ */
+
+.content {
+  position: relative;
+  height: calc(var(--u1) * 1045);
+}
+
+.title {
+  position: absolute;
+  z-index: 2;
+  left: calc(var(--u1) * 25.5);
+  top: calc(var(--u1) * 63);
+  margin: 0;
+  font-family: var(--font-outfit), var(--font-geist), system-ui, sans-serif;
+  font-weight: 400;
+  font-size: calc(var(--u1) * 49.8);
+  line-height: calc(var(--u1) * 46.28);
+  letter-spacing: -0.015em;
+  color: var(--green);
+}
+
+.line {
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  padding-bottom: 0.14em;
+  margin-bottom: -0.14em;
+}
+
+.lineInner {
+  display: block;
+  transition: translate 1s var(--ease-out);
+  transition-delay: var(--d, 0s);
+}
+
+/* Figma image 24: 458.754 × 688.131 rotated −26.07° in a 714.46 × 819.72 box at
+   the top centre (CornDipScene's LAYOUT mirrors these numbers). First paint on
+   desktop; the canvas draws the same corn once ready and this copy steps aside. */
+.corn {
+  position: absolute;
+  z-index: 1;
+  left: 50%;
+  top: 0;
+  width: calc(var(--u1) * 714.46);
+  height: calc(var(--u1) * 819.72);
+  translate: -50% 0;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+}
+
+.cornImg {
+  display: block;
+  width: calc(var(--u1) * 458.754);
+  height: calc(var(--u1) * 688.131);
+  max-width: none;
+  object-fit: cover;
+  rotate: -26.07deg;
+}
+
+.stage[data-ready="true"] .corn {
+  visibility: hidden;
+}
+
+/* pitch: Figma 68:3810–68:3812, right-anchored, 230px higher than Figma */
+.pitch {
+  position: absolute;
+  z-index: 2;
+  right: calc(var(--u1) * 30.5);
+  top: calc(var(--u1) * 405);
+  width: calc(var(--u1) * 287);
+  min-width: 260px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+/* Figma sets this block in cream on the gradient's lightest corner (~1.1:1);
+   the cards' olive keeps the same palette and makes it readable. */
+.pitchTitle {
+  margin: 0;
+  font-family: var(--font-outfit), var(--font-geist), system-ui, sans-serif;
+  font-weight: 500;
+  font-size: calc(var(--u1) * 49.8);
+  line-height: calc(var(--u1) * 46.28);
+  letter-spacing: -0.015em;
+  color: var(--olive);
+}
+
+.pitchBody {
+  margin: calc(var(--u1) * 27.4) 0 0;
+  font-family: var(--font-geist), system-ui, sans-serif;
+  font-weight: 500;
+  font-size: max(10.5px, calc(var(--u1) * 12.3));
+  line-height: 1.461;
+  text-transform: uppercase;
+  color: var(--olive-deep);
+}
+
+/* Learn more (ui/DotLink) in this section's size and olive; fills cream-on-olive */
+.learnMore {
+  --dl-u: var(--u1);
+  --dl-height: 39.24;
+  --dl-size: 11.2;
+  --dl-line: rgba(76, 91, 32, 0.55);
+  --dl-ink: var(--olive);
+  --dl-dot: var(--olive);
+  --dl-paper: var(--card);
+
+  margin-top: calc(var(--u1) * 35.8);
+  transition:
+    opacity 0.8s var(--ease-out) 0.7s,
+    translate 0.8s var(--ease-out) 0.7s;
+}
+
+/* cards: Figma 68:3822 / 68:3863 / 68:3922 */
+.cards {
+  position: absolute;
+  z-index: 2;
+  left: calc(var(--u1) * 25.98);
+  right: calc(var(--u1) * 25.98);
+  top: calc(var(--u1) * 800);
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: calc(var(--u1) * 25.98);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: calc(var(--u1) * 222.98);
+  padding: calc(var(--u1) * 17.27);
+  background: var(--card);
+  transition:
+    opacity 0.9s var(--ease-out),
+    translate 0.9s var(--ease-out);
+  transition-delay: var(--d, 0s);
+}
+
+.cardIcon {
+  display: block;
+  width: calc(var(--u1) * 31.09);
+  height: calc(var(--u1) * 31.09);
+}
+
+.cardText {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--u1) * 10.36);
+}
+
+.cardTitle {
+  margin: 0;
+  font-family: var(--font-geist), system-ui, sans-serif;
+  font-weight: 500;
+  font-size: max(16px, calc(var(--u1) * 23.4));
+  line-height: 1.098;
+  letter-spacing: -0.01em;
+  color: var(--olive);
+}
+
+.cardBody {
+  margin: 0;
+  font-family: var(--font-geist), system-ui, sans-serif;
+  font-weight: 500;
+  font-size: max(10.5px, calc(var(--u1) * 11.2));
+  line-height: 1.333;
+  text-transform: uppercase;
+  color: var(--olive-deep);
+}
+
+/* ------------------------------------------------------------------ */
+/* smcagri wordmark (Figma 68:3963: shows through a 175px band)          */
+/* ------------------------------------------------------------------ */
+
+.wordmarkBand {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: calc(var(--u2) * 175);
+  overflow: hidden;
+}
+
+.wordmark {
+  position: absolute;
+  left: calc(50% - var(--u2) * 9);
+  top: calc(var(--u2) * -69.17);
+  translate: -50% 0;
+  font-family: var(--font-geist), system-ui, sans-serif;
+  font-weight: 500;
+  font-size: calc(var(--u2) * 307.68);
+  line-height: calc(var(--u2) * 285.932);
+  letter-spacing: calc(var(--u2) * 39);
+  white-space: nowrap;
+  color: transparent;
+  background: linear-gradient(89.83deg, rgba(255, 255, 255, 0.6) 1%, rgba(255, 255, 255, 0) 144.86%);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+/* ------------------------------------------------------------------ */
+/* Phone film screen (hidden on desktop, where the stage plays it)      */
+/* ------------------------------------------------------------------ */
+
+.dip {
+  display: none;
+}
+
+.dipBlend {
+  position: absolute;
+  inset: 0;
+  mix-blend-mode: overlay;
+  opacity: 0.9;
+}
+
+.dipVideo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 50%;
+}
+
+/* ------------------------------------------------------------------ */
+/* Entrances (RevealOnScroll marks .content; without JS all visible)    */
+/* ------------------------------------------------------------------ */
+
+.content[data-inview="false"] .lineInner {
+  translate: 0 110%;
+}
+
+.content[data-inview="false"] .card {
+  opacity: 0;
+  translate: 0 calc(var(--u1) * 36);
+}
+
+.content[data-inview="false"] .learnMore {
+  opacity: 0;
+  translate: 0 calc(var(--u1) * 12);
+}
+
+/* ------------------------------------------------------------------ */
+/* Phones / tablets (full pass later): stack, keep copy readable        */
+/* ------------------------------------------------------------------ */
+
+@media (max-width: 1023px) {
+  .stage {
+    background: none;
+  }
+
+  .content {
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 48px 20px 32px;
+  }
+
+  .title,
+  .pitch,
+  .cards {
+    position: relative;
+    left: auto;
+    right: auto;
+    top: auto;
+  }
+
+  .title {
+    font-size: clamp(28px, 8cqw, 44px);
+    line-height: 1.02;
+  }
+
+  .corn {
+    position: relative;
+    left: auto;
+    top: auto;
+    translate: none;
+    width: 100%;
+    height: 90cqw;
+  }
+
+  .cornImg {
+    width: 50cqw;
+    height: 75cqw;
+    max-width: none;
+    object-fit: cover;
+    rotate: -26.07deg;
+  }
+
+  .pitch {
+    width: auto;
+    min-width: 0;
+  }
+
+  .pitchTitle {
+    font-size: clamp(26px, 7cqw, 40px);
+    line-height: 1.05;
+  }
+
+  .cards {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .card {
+    min-height: 180px;
+    padding: 16px;
+  }
+
+  .cardIcon {
+    width: 28px;
+    height: 28px;
+  }
+
+  .line {
+    white-space: normal;
+  }
+
+  .dip {
+    display: block;
+    position: relative;
+    height: 70cqw;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lineInner,
+  .card,
+  .learnMore {
+    transition: none;
+  }
+}

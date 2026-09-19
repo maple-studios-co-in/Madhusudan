@@ -1,0 +1,680 @@
+/*
+ * Hero — Figma node 58:410 re-proportioned to the full-viewport composition
+ * (overlay header, footage, copy, product picker, partner strip).
+ *
+ * Footage
+ *   Desktop plays landscape footage edge to edge (object-fit: cover). The
+ *   zoom-out is baked into the footage: each clip sits on its own studio
+ *   backdrop continued to the frame edges, so there is no box around it.
+ *   Phones play portrait footage, centred on the .stage placeholder, whose
+ *   top and bottom fade into the slide's surround colour.
+ *
+ * Scale model (desktop)
+ *   --s = one design unit: 1/100 of the hero width, capped by height so flat
+ *   viewports scale the composition down. x positions are % of the width,
+ *   y positions are cqh.
+ *
+ * Below 1024px the copy and controls reflow into a column.
+ */
+
+@property --reveal {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
+}
+
+.shell {
+  container-type: size;
+  position: relative;
+  width: 100%;
+  height: 100svh;
+  min-height: 640px;
+  background: #fff;
+}
+
+.hero {
+  --cream: #f4ede6;
+  --ink: #1f2b3f;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --s: min(1cqw, 1.45cqh);
+  --copy-shadow: 0 1px 16px rgba(0, 0, 0, 0.22);
+
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  color: var(--cream);
+}
+
+/* ------------------------------------------------------------------ */
+/* Footage                                                              */
+/* ------------------------------------------------------------------ */
+
+.media {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+/* one full-hero layer per <video>; the player swaps and reveals them */
+.slide {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  opacity: 0;
+}
+
+.posterSlide {
+  z-index: 0;
+  opacity: 1;
+  transition: opacity 600ms linear;
+}
+
+/* new product: soft-edged circle growing from the tapped thumbnail */
+.slide[data-reveal="true"] {
+  -webkit-mask-image: radial-gradient(
+    circle at var(--rx) var(--ry),
+    #000 calc(var(--reveal) - var(--reveal-edge, 140px)),
+    transparent var(--reveal)
+  );
+  mask-image: radial-gradient(
+    circle at var(--rx) var(--ry),
+    #000 calc(var(--reveal) - var(--reveal-edge, 140px)),
+    transparent var(--reveal)
+  );
+}
+
+.video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 50%;
+  pointer-events: none;
+}
+
+/* neutral lift for the partner strip; theme-free so product switches stay clean */
+.gradient {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  height: 36%;
+  pointer-events: none;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.14) 55%, rgba(0, 0, 0, 0.3) 100%);
+}
+
+/* phones only */
+.stage {
+  display: none;
+}
+
+/* ------------------------------------------------------------------ */
+/* Copy                                                                 */
+/* ------------------------------------------------------------------ */
+
+.headline {
+  position: absolute;
+  z-index: 2;
+  left: 4.2%;
+  top: 9.6cqh;
+  margin: 0;
+  font-family: var(--font-geist), system-ui, sans-serif;
+  font-weight: 500;
+  font-size: calc(var(--s) * 4.7);
+  line-height: 0.96;
+  letter-spacing: 0;
+  color: inherit;
+  white-space: nowrap;
+  text-shadow: var(--copy-shadow);
+}
+
+.line {
+  display: block;
+  overflow: hidden;
+  /* keep descenders visible while the line box is clipped */
+  padding-bottom: 0.16em;
+  margin-bottom: -0.16em;
+}
+
+.lineInner {
+  display: block;
+  animation: riseIn 1s var(--ease-out) both;
+  animation-delay: var(--d, 0s);
+}
+
+.tagline {
+  position: absolute;
+  z-index: 2;
+  right: 3.8%;
+  top: 38.6cqh;
+  margin: 0;
+  text-align: right;
+  font-family: var(--font-geist), system-ui, sans-serif;
+  font-weight: 500;
+  font-size: calc(var(--s) * 2.9);
+  line-height: 0.93;
+  letter-spacing: -0.01em;
+  color: inherit;
+  white-space: nowrap;
+  text-shadow: var(--copy-shadow);
+}
+
+.blurb {
+  position: absolute;
+  z-index: 2;
+  right: 3.8%;
+  top: 49.3cqh;
+  width: calc(var(--s) * 16.7);
+  margin: 0;
+  font-family: var(--font-poppins), system-ui, sans-serif;
+  font-weight: 300;
+  font-size: max(10px, calc(var(--s) * 0.72));
+  line-height: 1.6;
+  text-transform: capitalize;
+  color: inherit;
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.28);
+  animation: fadeUp 0.9s var(--ease-out) both;
+  animation-delay: 0.62s;
+}
+
+.blurb strong {
+  font-weight: 700;
+}
+
+/* ------------------------------------------------------------------ */
+/* Picker: product · EXPLORE · product                                  */
+/* ------------------------------------------------------------------ */
+
+.cta {
+  position: absolute;
+  z-index: 3;
+  left: 48.4%;
+  top: 68cqh;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  gap: calc(var(--s) * 2.75);
+}
+
+.slotEnter {
+  animation: popIn 0.7s var(--ease-out) both;
+}
+
+.slotLeft {
+  animation-delay: 0.95s;
+}
+
+.slotRight {
+  animation-delay: 1.05s;
+}
+
+.productWrap {
+  position: relative;
+}
+
+.product {
+  position: relative;
+  display: block;
+  width: calc(var(--s) * 6.1);
+  height: calc(var(--s) * 6.1);
+  padding: 0;
+  border: 0;
+  border-radius: 9999px;
+  background: var(--cream);
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: 0 12px 32px rgba(20, 8, 4, 0.28);
+  animation: bob 5.5s ease-in-out 1.6s infinite;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.product[aria-disabled="true"] {
+  cursor: progress;
+}
+
+.product:focus-visible {
+  outline: 2px solid var(--cream);
+  outline-offset: 5px;
+}
+
+.slotRight .product {
+  animation-duration: 6.4s;
+  animation-delay: -1.2s;
+}
+
+.productImg {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: transform 0.5s var(--ease-out);
+}
+
+.product:hover .productImg,
+.product:focus-visible .productImg {
+  transform: scale(1.08);
+}
+
+.thumbIn {
+  animation: thumbIn 0.52s var(--ease-out) both;
+}
+
+.thumbOut {
+  animation: thumbOut 0.42s cubic-bezier(0.4, 0, 0.8, 0.4) both;
+  pointer-events: none;
+}
+
+.productName {
+  position: absolute;
+  left: 50%;
+  top: calc(100% + var(--s) * 0.8);
+  translate: -50% 0;
+  font-family: var(--font-kulim), system-ui, sans-serif;
+  font-size: max(9px, calc(var(--s) * 0.72));
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--cream);
+  text-shadow: var(--copy-shadow);
+  opacity: 0;
+  transform: translateY(-4px);
+  transition:
+    opacity 0.35s var(--ease-out),
+    transform 0.35s var(--ease-out);
+  pointer-events: none;
+}
+
+.productWrap:hover .productName,
+.product:focus-visible + .productName {
+  opacity: 0.92;
+  transform: translateY(0);
+}
+
+.explore {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: calc(var(--s) * 14.4);
+  height: calc(var(--s) * 14.4);
+  text-decoration: none;
+  color: var(--ink);
+  outline: none;
+}
+
+.ringWrap {
+  position: absolute;
+  inset: -0.53%; /* the SVG is 207.058 wide for a 204.883 box */
+  animation: ringIn 1s var(--ease-out) both;
+  animation-delay: 0.85s;
+}
+
+.ring {
+  display: block;
+  width: 100%;
+  height: 100%;
+  animation: breathe 4.6s ease-in-out 1.9s infinite;
+}
+
+.discWrap {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: calc(var(--s) * 10);
+  height: calc(var(--s) * 10);
+  translate: -50% -50%;
+  animation: popIn 0.8s var(--ease-out) both;
+  animation-delay: 0.7s;
+}
+
+.disc {
+  display: block;
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 14px 32px rgba(20, 8, 4, 0.3));
+  transition: transform 0.5s var(--ease-out);
+}
+
+.explore:hover .disc,
+.explore:focus-visible .disc {
+  transform: scale(1.06);
+}
+
+.explore:focus-visible .disc {
+  outline: 2px solid var(--cream);
+  outline-offset: 6px;
+  border-radius: 9999px;
+}
+
+.exploreLabel {
+  position: relative;
+  z-index: 1;
+  font-family: var(--font-kulim), system-ui, sans-serif;
+  font-weight: 400;
+  font-size: max(11px, calc(var(--s) * 1.05));
+  line-height: 1.4;
+  letter-spacing: 0;
+  text-transform: uppercase;
+  color: var(--ink);
+  animation: fadeIn 0.6s ease-out both;
+  animation-delay: 1s;
+  transition: letter-spacing 0.4s var(--ease-out);
+}
+
+.explore:hover .exploreLabel,
+.explore:focus-visible .exploreLabel {
+  letter-spacing: 0.08em;
+}
+
+/* ------------------------------------------------------------------ */
+/* Partner strip: static, centred                                       */
+/* ------------------------------------------------------------------ */
+
+.partners {
+  position: absolute;
+  z-index: 2;
+  left: 0;
+  right: 0;
+  bottom: 3.6cqh;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: calc(var(--s) * 1.2) calc(var(--s) * 5.05); /* Figma: 73px marks on a 200px pitch */
+  margin: 0;
+  padding: 0 4%;
+  list-style: none;
+  animation: fadeIn 1s ease-out both;
+  animation-delay: 1.15s;
+}
+
+.partnerItem {
+  display: inline-flex;
+  align-items: center;
+  color: var(--cream);
+  opacity: 0.7;
+  text-shadow: var(--copy-shadow);
+}
+
+.partnerWordmark {
+  font-family: var(--font-poppins), system-ui, sans-serif;
+  font-weight: 700;
+  font-size: calc(var(--s) * 3.1);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  text-transform: lowercase;
+}
+
+.partnerLogo {
+  display: block;
+  height: calc(var(--s) * 5.1);
+  width: auto;
+}
+
+/* ------------------------------------------------------------------ */
+/* Keyframes                                                            */
+/* ------------------------------------------------------------------ */
+
+@keyframes riseIn {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 108%, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 18px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes popIn {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes ringIn {
+  from {
+    opacity: 0;
+    transform: scale(1.18);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes breathe {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.045);
+  }
+}
+
+@keyframes bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes thumbIn {
+  from {
+    opacity: 0;
+    transform: translateY(38%) scale(0.45) rotate(-28deg);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1) rotate(0deg);
+  }
+}
+
+@keyframes thumbOut {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1) rotate(0deg);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-38%) scale(0.45) rotate(28deg);
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Phones / tablets: column layout over portrait footage                */
+/* ------------------------------------------------------------------ */
+
+@media (max-width: 1023px) {
+  .shell {
+    container-type: inline-size;
+    height: auto;
+    min-height: 0;
+  }
+
+  .hero {
+    height: auto;
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    padding: 0 20px clamp(24px, 4vh, 40px);
+  }
+
+  /* portrait footage: canvas centre of the clip (40% down) on the stage centre */
+  .video {
+    top: var(--stage-cy, calc(86px + 57vw));
+    bottom: auto;
+    height: auto;
+    aspect-ratio: 9 / 16;
+    translate: 0 -40%;
+  }
+
+  .gradient {
+    display: none;
+  }
+
+  .stage {
+    display: block;
+    order: 2;
+    flex: none;
+    height: 82vw;
+    max-height: 640px;
+    margin: 4px 0 6px;
+  }
+
+  .headline,
+  .tagline,
+  .blurb,
+  .cta,
+  .partners {
+    position: relative;
+    z-index: 2;
+  }
+
+  .headline {
+    top: auto;
+    left: auto;
+    order: 1;
+    margin-top: clamp(16px, 3vh, 32px);
+    /* 8.3cqw keeps "Locked in at their best." on one line down to ~360px wide */
+    font-size: clamp(26px, 8.3cqw, 58px);
+    white-space: normal;
+    text-wrap: balance;
+  }
+
+  .tagline {
+    top: auto;
+    right: auto;
+    order: 3;
+    align-self: flex-end;
+    font-size: clamp(26px, 7.4cqw, 40px);
+  }
+
+  .blurb {
+    top: auto;
+    right: auto;
+    order: 4;
+    align-self: flex-end;
+    width: min(100%, 300px);
+    margin-top: 14px;
+    font-size: 12px;
+  }
+
+  .cta {
+    left: auto;
+    top: auto;
+    transform: none;
+    order: 5;
+    align-self: center;
+    margin-top: clamp(24px, 5vh, 44px);
+    gap: 14px;
+  }
+
+  .product {
+    width: 66px;
+    height: 66px;
+  }
+
+  .productName {
+    top: calc(100% + 8px);
+    font-size: 10px;
+  }
+
+  .explore {
+    width: 150px;
+    height: 150px;
+  }
+
+  .discWrap {
+    width: 98px;
+    height: 98px;
+  }
+
+  .exploreLabel {
+    font-size: 13px;
+  }
+
+  .partners {
+    left: auto;
+    right: auto;
+    bottom: auto;
+    order: 6;
+    margin-top: clamp(28px, 6vh, 56px);
+    padding: 0;
+    gap: 10px 20px;
+  }
+
+  .partnerWordmark {
+    font-size: 22px;
+  }
+
+  .partnerLogo {
+    height: 36px;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Reduced motion: render the final state, no choreography             */
+/* ------------------------------------------------------------------ */
+
+@media (prefers-reduced-motion: reduce) {
+  .lineInner,
+  .blurb,
+  .slotEnter,
+  .product,
+  .ringWrap,
+  .ring,
+  .discWrap,
+  .exploreLabel,
+  .partners,
+  .thumbIn,
+  .thumbOut {
+    animation: none;
+  }
+
+  .thumbOut {
+    display: none;
+  }
+
+  .posterSlide,
+  .productImg,
+  .productName,
+  .disc,
+  .exploreLabel {
+    transition: none;
+  }
+}

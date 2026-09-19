@@ -1,0 +1,208 @@
+/*
+ * "Then we move fast" — Figma 103:4250 (1430 × 900).
+ *
+ * --u is one Figma px: the smaller of the width scale (100cqw / 1430) and the
+ * height scale (100svh / 900), so the section always fits one screen. The halves
+ * stay 50/50 of the full width; the copy keeps Figma's left anchoring.
+ *
+ * The right half is Figma's footage box: 715 × 1080 placed at y −162 inside a
+ * 900-tall clip, i.e. 120% of the half's height starting at −18%, cover-fit. The
+ * clip is the IQF line montage (iqf-line-v1-1080.mp4; frame 0 = Figma's still).
+ *
+ * Motion: title lines and the statement (word by word) rise in, Learn more
+ * follows; the footage opens from the centre seam outwards and settles in scale.
+ */
+
+.shell {
+  container-type: inline-size;
+  width: 100%;
+  background: #eff6e4;
+}
+
+.section {
+  --uw: calc(100cqw / 1430);
+  --u: min(var(--uw), calc(100svh / 900));
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --dl-u: var(--u);
+
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  height: calc(var(--u) * 900);
+  overflow: hidden;
+  background: #eff6e4;
+}
+
+/* ------------------------------------------------------------------ */
+/* Left: copy                                                           */
+/* ------------------------------------------------------------------ */
+
+.copy {
+  position: relative;
+}
+
+/* 103:4252 — Geist Medium 49.8/46.28, −1.493px tracking, #5c9105 */
+.title {
+  position: absolute;
+  left: calc(var(--u) * 43.26);
+  top: calc(var(--u) * 92.26);
+  margin: 0;
+  font-family: var(--font-geist), system-ui, sans-serif;
+  font-weight: 500;
+  font-size: calc(var(--u) * 49.8);
+  line-height: calc(var(--u) * 46.28);
+  letter-spacing: -0.03em;
+  white-space: nowrap;
+  text-transform: uppercase;
+  color: #5c9105;
+}
+
+.line {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.14em;
+  margin-bottom: -0.14em;
+}
+
+.lineInner {
+  display: block;
+  transition: translate 1s var(--ease-out);
+  transition-delay: var(--d, 0s);
+}
+
+/* 103:4253 — 14.3px caps on 18.75px lines, a blank line between the paragraphs */
+.body {
+  position: absolute;
+  left: calc(var(--u) * 43.26);
+  top: calc(var(--u) * 664.94);
+  font-family: var(--font-geist), system-ui, sans-serif;
+  font-weight: 500;
+  font-size: max(11px, calc(var(--u) * 14.3));
+  line-height: 1.311;
+  text-transform: uppercase;
+  color: #404f1d;
+}
+
+.body p {
+  margin: 0;
+}
+
+.body p + p {
+  margin-top: 1.311em;
+}
+
+/* 103:4328 */
+.cta {
+  position: absolute;
+  left: calc(var(--u) * 43.26);
+  top: calc(var(--u) * 813.79);
+  transition:
+    opacity 0.8s var(--ease-out) 0.75s,
+    translate 0.8s var(--ease-out) 0.75s;
+}
+
+/* ------------------------------------------------------------------ */
+/* Right: footage                                                       */
+/* ------------------------------------------------------------------ */
+
+.media {
+  position: relative;
+  overflow: hidden;
+}
+
+.reveal {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: #c9d3d2;
+  clip-path: inset(0 0 0 0);
+  transition: clip-path 1.25s cubic-bezier(0.65, 0, 0.25, 1);
+}
+
+.frame {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -18%;
+  height: 120%;
+  transition: scale 1.8s var(--ease-out);
+}
+
+.video {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 50%;
+}
+
+/* ------------------------------------------------------------------ */
+/* Entrances (JS marks the roots; without JS everything is visible)     */
+/* ------------------------------------------------------------------ */
+
+.copy[data-inview="false"] .lineInner {
+  translate: 0 110%;
+}
+
+.copy[data-inview="false"] .cta {
+  opacity: 0;
+  translate: 0 calc(var(--u) * 12);
+}
+
+.media[data-inview="false"] .reveal {
+  clip-path: inset(0 100% 0 0);
+}
+
+.media[data-inview="false"] .frame {
+  scale: 1.16;
+}
+
+/* ------------------------------------------------------------------ */
+/* Phones / tablets (full pass later): stack, keep copy readable        */
+/* ------------------------------------------------------------------ */
+
+@media (max-width: 1023px) {
+  .section {
+    grid-template-columns: 1fr;
+    height: auto;
+  }
+
+  .copy {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    padding: 48px 20px 40px;
+  }
+
+  .title,
+  .body,
+  .cta {
+    position: relative;
+    left: auto;
+    top: auto;
+  }
+
+  .title {
+    font-size: clamp(30px, 8.4cqw, 46px);
+    line-height: 0.95;
+  }
+
+  .body {
+    font-size: 12px;
+  }
+
+  .media {
+    aspect-ratio: 4 / 5;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lineInner,
+  .cta,
+  .reveal,
+  .frame {
+    transition: none;
+  }
+}

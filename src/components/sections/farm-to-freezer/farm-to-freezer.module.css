@@ -1,0 +1,402 @@
+/*
+ * "From Farm To Freezer" — Figma frame width 1430.
+ *
+ * Two screens, each sized to fit the viewport:
+ *   --ui  one Figma px for the intro  = min(width scale, 100svh / 806)
+ *   --us  one Figma px for the scene  = min(width scale, 100svh / 1037)
+ *   --uw  the width scale alone (100cqw / 1430), used by the line art so it
+ *         always spans the full width; it is anchored to its Figma baseline
+ *         and its empty sky is cropped instead.
+ * Measurements are `calc(var(--u?) * <figma px>)`. Section coordinates start
+ * at the hero's bottom edge (page y 1086).
+ *
+ * Motion: RevealOnScroll sets data-inview on .intro and .scene; entrances key
+ * off it. Where scroll-driven animations exist, the corn cob and the line art
+ * drift with the page. Everything is static for reduced-motion users.
+ */
+
+.shell {
+  container-type: inline-size;
+  width: 100%;
+  background: #eff6e4;
+}
+
+.section {
+  --uw: calc(100cqw / 1430);
+  --ui: min(var(--uw), calc(100svh / 806));
+  --us: min(var(--uw), calc(100svh / 1037));
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --green: #5c9105;
+  --brick: #a23928;
+
+  position: relative;
+  overflow: hidden;
+  min-height: calc(var(--ui) * 806 + var(--us) * 1037);
+  background: #eff6e4;
+  color: #000;
+}
+
+/* ------------------------------------------------------------------ */
+/* Intro copy                                                           */
+/* ------------------------------------------------------------------ */
+
+.intro {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: calc(var(--ui) * 185);
+  text-align: center;
+}
+
+.eyebrow {
+  margin: 0;
+  font-family: var(--font-poppins), system-ui, sans-serif;
+  font-weight: 400;
+  font-size: calc(var(--ui) * 32);
+  line-height: 1;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--brick);
+}
+
+.title {
+  margin: calc(var(--ui) * 15) 0 0;
+  font-family: var(--font-geist), system-ui, sans-serif;
+  font-weight: 800;
+  font-size: calc(var(--ui) * 180);
+  line-height: 1;
+  letter-spacing: 0;
+  color: var(--green);
+}
+
+.line {
+  display: block;
+  overflow: hidden;
+  /* room for descenders while the line box clips the rising text */
+  padding-bottom: 0.12em;
+  margin-bottom: -0.12em;
+}
+
+.lineInner {
+  display: block;
+}
+
+.lede {
+  margin: calc(var(--ui) * 54) 0 calc(var(--ui) * 52);
+  width: calc(var(--ui) * 960);
+  font-family: var(--font-poppins), system-ui, sans-serif;
+  font-weight: 300;
+  font-size: calc(var(--ui) * 24);
+  line-height: 1.5;
+  color: #000;
+}
+
+/* ------------------------------------------------------------------ */
+/* Harvest scene                                                        */
+/* ------------------------------------------------------------------ */
+
+.scene {
+  position: relative;
+  z-index: 1;
+  height: calc(var(--us) * 1037);
+  overflow: hidden;
+}
+
+.lineartWrap {
+  position: absolute;
+  left: calc(var(--uw) * -50.65);
+  top: calc(var(--us) * 927 - var(--uw) * 927);
+  width: calc(var(--uw) * 1647.124);
+  height: calc(var(--uw) * 927);
+}
+
+.lineartDrift {
+  width: 100%;
+  height: 100%;
+}
+
+.lineart {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  opacity: 0.64;
+}
+
+/*
+ * Corn journey. ScrollProgress writes --p on .journey (scene-sized); from it:
+ *   --shuck  0→1 over p .02–.22  leaves dissolve, the bare cob shows through
+ *   --turn   0→1 over p .10–.55  the bare cob turns upright (−15°)
+ *   --fall   0→1 over p .15–1    on-screen fall, eased in, 60% of the screen
+ * The drop first cancels the page scroll (the cob holds still on screen while
+ * its leaves come off), then adds the fall, so the cob visibly drops into the
+ * rising edge of the next section, which clips it. The bare cob is the "How
+ * much could you grow" cob, fitted onto the husked one (kernel overlap search:
+ * scale .84, −4°, offset 13.28% / −12.24% about its centroid).
+ */
+.journey {
+  --shuck: clamp(0, calc((var(--p, 0) - 0.02) / 0.2), 1);
+  --turn: clamp(0, calc((var(--p, 0) - 0.1) / 0.45), 1);
+  --fall: clamp(0, calc((var(--p, 0) - 0.15) / 0.85), 1);
+
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.cob {
+  position: absolute;
+  left: calc(var(--us) * 0.09);
+  top: calc(var(--us) * 100.14);
+  width: calc(var(--us) * 529.591);
+  height: calc(var(--us) * 711.51);
+  display: grid;
+  place-items: center;
+}
+
+/* scroll span of the range = scene height − 15% of the screen */
+.cobDrop {
+  display: grid;
+  place-items: center;
+  transform: translate3d(
+    0,
+    calc(var(--p, 0) * (var(--us) * 1037 - 15svh) + var(--fall) * var(--fall) * 60svh),
+    0
+  );
+}
+
+.cobGroup {
+  position: relative;
+  width: calc(var(--us) * 435.22);
+  height: calc(var(--us) * 652.829);
+  rotate: -8.76deg;
+  filter: drop-shadow(0 calc(var(--us) * 30) calc(var(--us) * 40) rgba(64, 79, 29, 0.18));
+  animation: sway 7s ease-in-out infinite;
+}
+
+.husk,
+.bare {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: cover;
+}
+
+.husk {
+  opacity: calc(1 - var(--shuck));
+  scale: calc(1 + var(--shuck) * 0.05);
+}
+
+/* turns about the fitted cob's centre (589.1, 665.6 of 1024 × 1536) */
+.bareTurn {
+  position: absolute;
+  inset: 0;
+  transform-origin: 57.53% 43.33%;
+  rotate: calc(var(--turn) * -15deg);
+}
+
+.bare {
+  opacity: var(--shuck);
+  transform-origin: 44.25% 55.57%;
+  transform: translate(13.28%, -12.24%) rotate(-4deg) scale(0.84);
+}
+
+.card {
+  position: absolute;
+  z-index: 2;
+  left: calc(var(--us) * 336);
+  top: calc(var(--us) * 233);
+  width: calc(var(--us) * 331.77);
+  min-height: calc(var(--us) * 171.47);
+  display: flex;
+  flex-direction: column;
+  padding: calc(var(--us) * 22.7) calc(var(--us) * 36.72) calc(var(--us) * 20) calc(var(--us) * 16.27);
+  border: 1px solid #f4ede6;
+  border-radius: calc(var(--us) * 12);
+  background: rgba(92, 145, 5, 0.23);
+  -webkit-backdrop-filter: blur(15px);
+  backdrop-filter: blur(15px);
+  color: #fff;
+  font-family: var(--font-geist), system-ui, sans-serif;
+  font-weight: 500;
+}
+
+.cardTitle {
+  margin: 0;
+  font-size: calc(var(--us) * 26);
+  line-height: calc(var(--us) * 31.19);
+}
+
+.cardBody {
+  margin: calc(var(--us) * 36.07) 0 0;
+  font-size: calc(var(--us) * 12.4);
+  line-height: calc(var(--us) * 17.97);
+  text-transform: uppercase;
+}
+
+/* ------------------------------------------------------------------ */
+/* Entrances (JS marks the roots; without JS everything is visible)     */
+/* ------------------------------------------------------------------ */
+
+.intro .eyebrow,
+.intro .lede {
+  transition:
+    opacity 0.9s var(--ease-out),
+    translate 0.9s var(--ease-out);
+}
+
+.intro .lineInner {
+  transition: translate 1.1s var(--ease-out);
+  transition-delay: var(--d, 0s);
+}
+
+.intro .lede {
+  transition-delay: 0.4s;
+}
+
+.intro[data-inview="false"] .eyebrow,
+.intro[data-inview="false"] .lede {
+  opacity: 0;
+  translate: 0 calc(var(--ui) * 24);
+}
+
+.intro[data-inview="false"] .lineInner {
+  translate: 0 108%;
+}
+
+.scene .lineartWrap,
+.scene .cob,
+.scene .card {
+  transition:
+    opacity 1.1s var(--ease-out),
+    translate 1.1s var(--ease-out);
+}
+
+.scene .cob {
+  transition-delay: 0.15s;
+}
+
+.scene .card {
+  transition-delay: 0.45s;
+}
+
+.scene[data-inview="false"] .lineartWrap {
+  opacity: 0;
+  translate: 0 calc(var(--us) * 40);
+}
+
+.scene[data-inview="false"] .cob {
+  opacity: 0;
+  translate: calc(var(--us) * -80) calc(var(--us) * 30);
+}
+
+.scene[data-inview="false"] .card {
+  opacity: 0;
+  translate: 0 calc(var(--us) * 28);
+}
+
+@keyframes sway {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  50% {
+    translate: 0 calc(var(--us) * -10);
+  }
+}
+
+/* scroll-linked drift of the line art where the browser supports it */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .lineartDrift {
+      animation: lineartDrift linear both;
+      animation-timeline: view();
+      animation-range: entry 0% exit 100%;
+    }
+  }
+}
+
+@keyframes lineartDrift {
+  from {
+    transform: translateX(calc(var(--us) * -18));
+  }
+  to {
+    transform: translateX(calc(var(--us) * 18));
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Phones / tablets (full pass later): keep copy readable               */
+/* ------------------------------------------------------------------ */
+
+@media (max-width: 1023px) {
+  .section {
+    min-height: 0;
+  }
+
+  .intro {
+    padding: max(56px, calc(var(--ui) * 185)) 20px 0;
+  }
+
+  .eyebrow {
+    font-size: max(12px, calc(var(--ui) * 32));
+  }
+
+  .title {
+    margin-top: max(10px, calc(var(--ui) * 15));
+  }
+
+  .lede {
+    width: min(100%, 560px);
+    margin-top: max(20px, calc(var(--ui) * 54));
+    font-size: max(15px, calc(var(--ui) * 24));
+  }
+
+  .scene {
+    height: calc(var(--us) * 1037 + 60px);
+    margin-top: max(28px, calc(var(--us) * 52));
+  }
+
+  .card {
+    left: auto;
+    right: 16px;
+    top: auto;
+    bottom: 12px;
+    width: min(62%, 280px);
+    min-height: 0;
+    padding: 14px 16px 16px;
+    border-radius: 12px;
+  }
+
+  .cardTitle {
+    font-size: 18px;
+    line-height: 1.2;
+  }
+
+  .cardBody {
+    margin-top: 10px;
+    font-size: 11px;
+    line-height: 1.45;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .intro .eyebrow,
+  .intro .lede,
+  .intro .lineInner,
+  .scene .lineartWrap,
+  .scene .cob,
+  .scene .card {
+    transition: none;
+  }
+
+  .cobGroup {
+    animation: none;
+  }
+}

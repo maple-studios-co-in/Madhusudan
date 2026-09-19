@@ -1,0 +1,184 @@
+/*
+ * Site footer — Figma 119:773 (1430 × 236). One Figma px is
+ * --u = min(100cqw / 1430, 100svh / 236); positions follow Figma, anchored to
+ * the left or right edge like the design. Text: Geist Medium ~11.4px caps on
+ * 14.93px lines, #404f1d.
+ */
+
+.shell {
+  container-type: inline-size;
+  width: 100%;
+  background: #eff6e4;
+}
+
+.footer {
+  --u: min(calc(100cqw / 1430), calc(100svh / 236));
+
+  position: relative;
+  height: calc(var(--u) * 236);
+  font-family: var(--font-geist), system-ui, sans-serif;
+  font-weight: 500;
+  font-size: max(10.5px, calc(var(--u) * 11.4));
+  line-height: max(13.75px, calc(var(--u) * 14.93));
+  text-transform: uppercase;
+  color: #404f1d;
+}
+
+.footer ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.note,
+.copyright {
+  margin: 0;
+}
+
+.link {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.link:hover,
+.link:focus-visible {
+  color: #5c9105;
+}
+
+.link:focus-visible {
+  outline: 2px solid #5c9105;
+  outline-offset: 2px;
+}
+
+/* image 12 + image 13: leaves over the wordmark, 117 × 64 at (24, 52) */
+.logo {
+  position: absolute;
+  left: calc(var(--u) * 24);
+  top: calc(var(--u) * 52);
+  display: block;
+  width: calc(var(--u) * 117);
+  height: calc(var(--u) * 64);
+}
+
+.logoImg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* link columns at x 208.31 and 367.95 */
+.group {
+  position: absolute;
+  top: calc(var(--u) * 51.83);
+}
+
+.group:nth-child(1) {
+  left: calc(var(--u) * 208.31);
+}
+
+.group:nth-child(2) {
+  left: calc(var(--u) * 367.95);
+}
+
+.groupTitle {
+  margin: 0 0 calc(var(--u) * 8.29);
+  opacity: 0.4;
+}
+
+.links {
+  display: grid;
+  gap: calc(var(--u) * 4.14);
+}
+
+/* right block: note at 51.83, email at 98.95 (15.9px on 20.74px) */
+.contact {
+  position: absolute;
+  right: calc(var(--u) * 25.78);
+  top: calc(var(--u) * 51.83);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  text-align: right;
+}
+
+.email {
+  margin-top: calc(var(--u) * 17.26);
+  font-size: calc(var(--u) * 15.9);
+  line-height: calc(var(--u) * 20.74);
+}
+
+.social {
+  position: absolute;
+  right: calc(var(--u) * 25.98);
+  top: calc(var(--u) * 174.99);
+}
+
+/* bottom row */
+.copyright {
+  position: absolute;
+  left: calc(var(--u) * 25.98);
+  top: calc(var(--u) * 204.31);
+}
+
+.legal {
+  position: absolute;
+  right: calc(var(--u) * 25.98);
+  top: calc(var(--u) * 204.31);
+  display: flex;
+  gap: calc(var(--u) * 13.83);
+}
+
+.credit {
+  opacity: 0.5;
+}
+
+/* ------------------------------------------------------------------ */
+/* Phones / tablets (full pass later): stacked                          */
+/* ------------------------------------------------------------------ */
+
+@media (max-width: 1023px) {
+  .footer {
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    padding: 36px 20px 28px;
+    font-size: 12px;
+    line-height: 1.4;
+  }
+
+  .logo,
+  .group,
+  .contact,
+  .social,
+  .copyright,
+  .legal {
+    position: static;
+  }
+
+  .logo {
+    width: 117px;
+    height: 64px;
+  }
+
+  .nav {
+    display: flex;
+    gap: 48px;
+  }
+
+  .contact {
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .email {
+    margin-top: 10px;
+    font-size: 16px;
+  }
+
+  .legal {
+    flex-wrap: wrap;
+    gap: 10px 16px;
+  }
+}

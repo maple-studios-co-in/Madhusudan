@@ -1,0 +1,339 @@
+/*
+ * "Harvest" — Figma node 66:3523 (1430 × 912.38).
+ *
+ * --u is one Figma pixel: the smaller of the width scale (100cqw / 1430) and the
+ * height scale (100svh / 912.38), so the whole section always fits one screen.
+ * Measurements below are `calc(var(--u) * <figma px>)`. The halves stay 50/50
+ * of the full width: the footage covers its half, the right-hand content keeps
+ * Figma's anchoring (copy to the left, plant to the right edge).
+ *
+ * Motion
+ *   - title lines and the small print (word by word) rise in when in view;
+ *   - the plant's filled layer rises from the ground as the section scrolls
+ *     through (scroll-driven where supported; otherwise it settles at the
+ *     Figma level on reveal);
+ *   - the field footage eases in scale with the scroll.
+ */
+
+.shell {
+  container-type: inline-size;
+  width: 100%;
+  background: #eff6e4;
+}
+
+.section {
+  --uw: calc(100cqw / 1430);
+  --u: min(var(--uw), calc(100svh / 912.38));
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --green: #5c9105;
+  --brick: #a23928;
+  --cream: #f4ede6;
+  /* Figma: filled layer shows its bottom 138.25 of 534.92px */
+  --fill-inset: 74.15%;
+
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: calc(var(--u) * 912.38);
+  overflow: hidden;
+  background: #eff6e4;
+}
+
+/* ------------------------------------------------------------------ */
+/* Left: footage + statement                                            */
+/* ------------------------------------------------------------------ */
+
+.media {
+  position: relative;
+  overflow: hidden;
+  background: #9fc3dd;
+  color: #fff;
+}
+
+.mediaMotion {
+  position: absolute;
+  inset: 0;
+}
+
+.mediaVideo {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 50%;
+}
+
+/* legibility for the statement over the leaves */
+.scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(18, 30, 8, 0.5) 0%, rgba(18, 30, 8, 0.18) 32%, rgba(18, 30, 8, 0) 52%);
+  pointer-events: none;
+}
+
+.mediaCopy {
+  position: absolute;
+  left: calc(var(--u) * 25.98);
+  top: calc(var(--u) * 683.2);
+  right: calc(var(--u) * 25.98);
+}
+
+.mediaTitle {
+  margin: 0;
+  font-family: var(--font-geist), system-ui, sans-serif;
+  font-weight: 500;
+  font-size: calc(var(--u) * 49.8);
+  line-height: calc(var(--u) * 46.28);
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  color: #fff;
+}
+
+.mediaBody {
+  margin: calc(var(--u) * 23.2) 0 0;
+  width: calc(var(--u) * 396.74);
+  font-family: var(--font-geist), system-ui, sans-serif;
+  font-weight: 500;
+  font-size: calc(var(--u) * 12.5);
+  line-height: calc(var(--u) * 17.97);
+  text-transform: uppercase;
+  color: var(--cream);
+}
+
+.bodyLine {
+  display: block;
+  white-space: nowrap;
+}
+
+.word {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+}
+
+.wordInner {
+  display: inline-block;
+}
+
+/* ------------------------------------------------------------------ */
+/* Right: eyebrow, title, plant                                         */
+/* ------------------------------------------------------------------ */
+
+.aside {
+  position: relative;
+}
+
+.eyebrow {
+  position: absolute;
+  left: calc(var(--u) * 43);
+  top: calc(var(--u) * 36.8);
+  margin: 0;
+  font-family: var(--font-poppins), system-ui, sans-serif;
+  font-weight: 400;
+  font-size: calc(var(--u) * 32);
+  line-height: 1;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--brick);
+}
+
+.title {
+  position: absolute;
+  left: calc(var(--u) * 43);
+  top: calc(var(--u) * 92.83);
+  width: calc(var(--u) * 604);
+  margin: 0;
+  font-family: var(--font-geist), system-ui, sans-serif;
+  font-weight: 500;
+  font-size: calc(var(--u) * 49.8);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--green);
+}
+
+.line {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.14em;
+  margin-bottom: -0.14em;
+}
+
+.lineInner {
+  display: block;
+}
+
+.plant {
+  position: absolute;
+  right: calc(var(--u) * 68.03);
+  top: calc(var(--u) * 377.46);
+  width: calc(var(--u) * 561.67);
+  height: calc(var(--u) * 534.92);
+}
+
+/* Figma insets 0.05% 0.19% 0.1% 0.05% (replaced elements do not stretch to insets) */
+.plantOutline {
+  position: absolute;
+  left: 0.05%;
+  top: 0.05%;
+  width: 99.76%;
+  height: 99.85%;
+  max-width: none;
+}
+
+/* scroll-scrubbed: empty at --p 0, Figma's level (bottom 25.85%) at --p 1;
+   without JS --p is unset and the plant shows the Figma level */
+.plantFillLayer {
+  position: absolute;
+  inset: 0;
+  clip-path: inset(calc(100% - (100% - var(--fill-inset)) * var(--p, 1)) 0 0 0);
+}
+
+.plantFillA,
+.plantFillB {
+  position: absolute;
+  left: 0.05%;
+  top: 0.05%;
+  width: 99.76%;
+  max-width: none;
+}
+
+.plantFillA {
+  height: 99.85%;
+}
+
+.plantFillB {
+  height: 99.69%;
+}
+
+/* ------------------------------------------------------------------ */
+/* Entrances (JS marks the roots; without JS everything is visible)     */
+/* ------------------------------------------------------------------ */
+
+.lineInner,
+.wordInner {
+  transition: translate 1s var(--ease-out);
+  transition-delay: var(--d, 0s);
+}
+
+.eyebrow {
+  transition:
+    opacity 0.9s var(--ease-out),
+    translate 0.9s var(--ease-out);
+}
+
+.plantOutline {
+  transition: opacity 1.2s var(--ease-out);
+}
+
+[data-inview="false"] .lineInner,
+[data-inview="false"] .wordInner {
+  translate: 0 110%;
+}
+
+.aside[data-inview="false"] .eyebrow {
+  opacity: 0;
+  translate: 0 calc(var(--u) * 16);
+}
+
+.aside[data-inview="false"] .plantOutline {
+  opacity: 0;
+}
+
+/* scroll-linked: the footage settles as the section passes */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .mediaMotion {
+      animation: mediaSettle linear both;
+      animation-timeline: view();
+      animation-range: entry 0% exit 100%;
+    }
+  }
+}
+
+@keyframes mediaSettle {
+  from {
+    transform: scale(1.14) translateY(calc(var(--u) * 24));
+  }
+  to {
+    transform: scale(1.02) translateY(calc(var(--u) * -24));
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Phones / tablets (full pass later): stack, keep copy readable        */
+/* ------------------------------------------------------------------ */
+
+@media (max-width: 1023px) {
+  .section {
+    grid-template-columns: 1fr;
+    min-height: 0;
+  }
+
+  .media {
+    aspect-ratio: 4 / 5;
+  }
+
+  .mediaCopy {
+    left: 18px;
+    right: 18px;
+    top: auto;
+    bottom: 22px;
+  }
+
+  .mediaTitle {
+    font-size: clamp(24px, 6.6cqw, 40px);
+    line-height: 1.05;
+  }
+
+  .mediaBody {
+    width: auto;
+    margin-top: 12px;
+    font-size: 11px;
+    line-height: 1.5;
+  }
+
+  .bodyLine {
+    display: inline;
+    white-space: normal;
+  }
+
+  .aside {
+    min-height: 118cqw;
+  }
+
+  .eyebrow {
+    left: 20px;
+    top: 36px;
+    font-size: 14px;
+  }
+
+  .title {
+    left: 20px;
+    right: 20px;
+    top: 64px;
+    width: auto;
+    font-size: clamp(28px, 7.4cqw, 44px);
+  }
+
+  .plant {
+    left: 50%;
+    right: auto;
+    top: auto;
+    bottom: 0;
+    width: 88cqw;
+    height: calc(88cqw * 534.92 / 561.67);
+    translate: -50% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lineInner,
+  .wordInner,
+  .eyebrow,
+  .plantFillLayer,
+  .plantOutline {
+    transition: none;
+  }
+}

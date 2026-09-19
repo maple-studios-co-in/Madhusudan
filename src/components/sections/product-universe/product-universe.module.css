@@ -1,0 +1,271 @@
+/*
+ * "Product universe" — Figma 119:627 (+ eyebrow 119:771, title 119:769).
+ *
+ * --u is one Figma px: min(100cqw / 1430, 100svh / 956). 956 Figma px is the
+ * eyebrow, title and the first row of cards (packs included) with breathing
+ * room, so that much always fits one screen; the next two rows follow at
+ * Figma's 510px pitch (the two of them take about one more screen). The
+ * 1430-wide frame is centred when the height is the limit.
+ *
+ * Card (Figma "Link"): 442 × 330.11, radius 5.53, 205° gradient cream → lime.
+ * Pack frame 276.48 × 349.71 at (60, −137.91) → its centre (198.24, 36.95);
+ * each pack keeps its own Figma size (--pw × --ph) centred there.
+ */
+
+.shell {
+  container-type: inline-size;
+  width: 100%;
+  background: #eff6e4;
+}
+
+.section {
+  --uw: calc(100cqw / 1430);
+  --u: min(var(--uw), calc(100svh / 956));
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --green: #5c9105;
+
+  position: relative;
+  width: calc(var(--u) * 1430);
+  margin: 0 auto;
+  padding: calc(var(--u) * 72) 0 calc(var(--u) * 110);
+}
+
+/* ------------------------------------------------------------------ */
+/* Heading                                                              */
+/* ------------------------------------------------------------------ */
+
+.head {
+  padding: 0 calc(var(--u) * 26);
+}
+
+/* 119:771 — Poppins 24px, 4px tracking, brand-deep */
+.eyebrow {
+  margin: 0;
+  font-family: var(--font-poppins), system-ui, sans-serif;
+  font-weight: 400;
+  font-size: calc(var(--u) * 24);
+  line-height: 1;
+  letter-spacing: calc(var(--u) * 4);
+  text-transform: uppercase;
+  color: var(--color-brand-deep, #732013);
+  transition:
+    opacity 0.9s var(--ease-out),
+    translate 0.9s var(--ease-out);
+}
+
+/* 119:769 — Geist 70/1.2, ExtraBold then SemiBold, −1.493px tracking */
+.title {
+  margin: calc(var(--u) * 20.48) 0 0;
+  font-family: var(--font-geist), system-ui, sans-serif;
+  font-weight: 600;
+  font-size: calc(var(--u) * 70);
+  line-height: 1.2;
+  letter-spacing: -0.0213em;
+  text-transform: capitalize;
+  color: var(--green);
+}
+
+.strong {
+  font-weight: 800;
+}
+
+.line {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.1em;
+  margin-bottom: -0.1em;
+}
+
+.lineInner {
+  display: block;
+  transition: translate 1s var(--ease-out);
+  transition-delay: var(--d, 0s);
+}
+
+/* ------------------------------------------------------------------ */
+/* Grid                                                                 */
+/* ------------------------------------------------------------------ */
+
+/* first card top sits 490.39 below the eyebrow (title ends at 212.48) */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  column-gap: calc(var(--u) * 19.5);
+  row-gap: calc(var(--u) * 179.89);
+  margin: calc(var(--u) * 277.91) 0 0;
+  padding: 0 calc(var(--u) * 26);
+  list-style: none;
+}
+
+.item {
+  position: relative;
+}
+
+.card {
+  position: relative;
+  height: calc(var(--u) * 330.11);
+  border-radius: calc(var(--u) * 5.53);
+  background: linear-gradient(205.18deg, #eff6e4 0%, #99c71f 100%);
+  transition:
+    opacity 0.9s var(--ease-out),
+    translate 1.1s var(--ease-out);
+  transition-delay: var(--d, 0s);
+}
+
+.packSlot {
+  position: absolute;
+  left: calc(var(--u) * 198.24);
+  top: calc(var(--u) * 36.95);
+  width: calc(var(--u) * var(--pw));
+  height: calc(var(--u) * var(--ph));
+  translate: -50% -50%;
+  transition:
+    opacity 1s var(--ease-out),
+    translate 1.2s var(--ease-out);
+  transition-delay: calc(var(--d, 0s) + 0.12s);
+}
+
+.pack {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  filter: drop-shadow(0 calc(var(--u) * 16) calc(var(--u) * 20) rgba(64, 79, 29, 0.16));
+  transition:
+    translate 0.6s var(--ease-out),
+    scale 0.6s var(--ease-out);
+}
+
+/* name: centred 95.36 above the card's bottom; blurb starts 70.51 above it */
+.name {
+  position: absolute;
+  left: calc(var(--u) * 17.27);
+  top: calc(var(--u) * 220.93);
+  margin: 0;
+  font-family: var(--font-geist), system-ui, sans-serif;
+  font-weight: 500;
+  font-size: calc(var(--u) * 25.4);
+  line-height: calc(var(--u) * 27.65);
+  white-space: nowrap;
+  text-transform: uppercase;
+  color: #fff;
+}
+
+.blurb {
+  position: absolute;
+  left: calc(var(--u) * 17.27);
+  top: calc(var(--u) * 259.6);
+  margin: 0;
+  font-family: var(--font-geist), system-ui, sans-serif;
+  font-weight: 500;
+  /* 12.4px on 17.97px lines in a 269.93px box; floored for short laptop
+     screens, with the box in em so the lines still break as designed */
+  font-size: max(10px, calc(var(--u) * 12.4));
+  line-height: 1.449;
+  width: 21.77em;
+  text-transform: capitalize;
+  color: #f4ede6;
+}
+
+.hook,
+.blurbLine {
+  display: block;
+}
+
+.hook {
+  text-transform: uppercase;
+}
+
+/* 119:639 — 46.72px tile, 8.7px in from the top-right corner */
+.arrow {
+  position: absolute;
+  top: calc(var(--u) * 8.7);
+  right: calc(var(--u) * 8.71);
+  display: grid;
+  place-items: center;
+  width: calc(var(--u) * 46.72);
+  height: calc(var(--u) * 46.72);
+  border-radius: 1.8px;
+  background: rgba(92, 145, 5, 0.1);
+  color: var(--green);
+  transition:
+    background-color 0.35s var(--ease-out),
+    color 0.35s var(--ease-out);
+}
+
+.arrowIcon {
+  width: calc(var(--u) * 10.36);
+  height: calc(var(--u) * 11.214);
+  translate: 0 calc(var(--u) * -0.94);
+  transition: translate 0.35s var(--ease-out);
+}
+
+.card:hover .pack {
+  translate: 0 calc(var(--u) * -12);
+  scale: 1.035;
+}
+
+.card:hover .arrow {
+  background: var(--green);
+  color: #fff;
+}
+
+.card:hover .arrowIcon {
+  translate: calc(var(--u) * 2) calc(var(--u) * -2.94);
+}
+
+/* ------------------------------------------------------------------ */
+/* Entrances (JS marks the roots; without JS everything is visible)     */
+/* ------------------------------------------------------------------ */
+
+.head[data-inview="false"] .eyebrow {
+  opacity: 0;
+  translate: 0 calc(var(--u) * 14);
+}
+
+.head[data-inview="false"] .lineInner {
+  translate: 0 110%;
+}
+
+.card[data-inview="false"] {
+  opacity: 0;
+  translate: 0 calc(var(--u) * 40);
+}
+
+.card[data-inview="false"] .packSlot {
+  opacity: 0;
+  translate: -50% calc(-50% + var(--u) * 36);
+}
+
+/* ------------------------------------------------------------------ */
+/* Phones / tablets (full pass later): one column                       */
+/* ------------------------------------------------------------------ */
+
+@media (max-width: 1023px) {
+  .section {
+    --u: calc(100cqw / 500);
+    width: 100%;
+  }
+
+  .title {
+    font-size: calc(var(--u) * 54);
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+    row-gap: calc(var(--u) * 190);
+    margin-top: calc(var(--u) * 200);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .eyebrow,
+  .lineInner,
+  .card,
+  .packSlot,
+  .pack,
+  .arrow,
+  .arrowIcon {
+    transition: none;
+  }
+}
