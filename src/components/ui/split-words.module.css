@@ -22,6 +22,14 @@
   translate: 0 115%;
 }
 
+/* phones and tablets: the design's line breaks give way to the column width */
+@media (max-width: 1023px) {
+  .line {
+    display: inline;
+    white-space: normal;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .wordInner {
     transition: none;

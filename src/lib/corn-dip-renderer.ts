@@ -69,12 +69,13 @@ export type DipCorn = {
 };
 
 /**
- * Where CSS lays the corn out (BetterWay): one unit = min(W / unitWidth,
+ * Where the corn rests before it falls: one unit = min(W / unitWidth,
  * H / unitHeight); the image (imageWidth units wide) is centred in a box
- * boxHeight units tall at the top centre of the stage. Computed rather than
- * measured so the copy layer's transform never skews it.
+ * boxHeight units tall, boxTop units below the top of the view, centred
+ * across. On desktop this mirrors BetterWay's CSS corn (computed rather than
+ * measured so the copy layer's transform never skews it).
  */
-export type DipLayout = { unitWidth: number; unitHeight: number; boxHeight: number; imageWidth: number };
+export type DipLayout = { unitWidth: number; unitHeight: number; boxTop: number; boxHeight: number; imageWidth: number };
 
 export type DipMotion = {
   /** how far the corn falls during the approach, share of the screen height */
@@ -127,7 +128,10 @@ export class CornDipRenderer {
 
   constructor(
     private readonly canvas: HTMLCanvasElement,
+    /** gets --a / --w and data-ready */
     private readonly stage: HTMLElement,
+    /** the box the canvas fills (the pinned screen) */
+    private readonly view: HTMLElement,
     private readonly layout: DipLayout,
     private readonly film: DipFilm,
     private readonly cornSpec: DipCorn,
@@ -189,8 +193,8 @@ export class CornDipRenderer {
   }
 
   resize(): void {
-    const W = this.stage.clientWidth;
-    const H = this.stage.clientHeight;
+    const W = this.view.clientWidth;
+    const H = this.view.clientHeight;
     if (!W || !H) return;
     this.dpr = Math.min(window.devicePixelRatio || 1, 2);
     this.canvas.width = Math.round(W * this.dpr);
@@ -239,7 +243,7 @@ export class CornDipRenderer {
     const { W, k } = this.geo;
     const u = (k * c.width) / L.imageWidth;
     const cx = W / 2;
-    const cy = (L.boxHeight * u) / 2;
+    const cy = (L.boxTop + L.boxHeight / 2) * u;
     const rot = c.layoutRotate * RAD;
     const dx = (c.anchor[0] - c.width / 2) * k;
     const dy = (c.anchor[1] - c.height / 2) * k;

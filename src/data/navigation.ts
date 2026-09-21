@@ -1,7 +1,5 @@
 export const SITE = {
   name: "SMC Agri Limited",
-  shortName: "SMC",
-  tagline: "Agri Limited",
   /** footer legal name (Figma 119:790) */
   legalName: "SMC Limited",
   email: "info@smcagri.com",

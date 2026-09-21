@@ -36,7 +36,7 @@ src/
       harvest/            "Harvest" (Figma 66:3523)
       better-way/         "How much could you grow": pinned corn-dip scene (Figma 68:3808), CornDipScene
       move-fast/          "Then we move fast" + IQF line footage (Figma 103:4250)
-      freeze-fast/        "Freeze fast. Keep more", pinned bag → pack sweep (Figma 103:4340)
+      freeze-fast/        "Freeze fast. Keep more", pinned bag → pack turn, PackFlight (Figma 103:4340)
       product-universe/   "Goodness, ready when you are" product grid (Figma 119:627 in 1:3)
       farm-to-homes/      "From one farm to half a million homes" band above the footer (Figma 119:843)
     ui/                   RevealOnScroll (in-view entrances), SplitWords (word-by-word rise),
@@ -79,7 +79,7 @@ Split section: footage on the left with a white statement (lines rise in; the sm
 
 **Desktop: one pinned screen** (`CornDipScene`, modelled frame by frame on the reference site's tablet drop). The page is held for 280svh of scroll while:
 
-1. *approach* (first 40%): the title, pitch and cards scroll up and off the screen at page speed (`--a`), the water and the `smcagri` wordmark rise from below and ease into place (`--w`), and the crisp Figma corn starts to fall — from rest, gathering speed (8% of the screen);
+1. *approach* (first 40%): the title, pitch and cards scroll up and off the screen at page speed (`--a`), the water and the `madhusudan` wordmark (Figma: "smcagri", scaled to the same width) rise from below and ease into place (`--w`), and the crisp Figma corn starts to fall — from rest, gathering speed (8% of the screen);
 2. *film* (last 60%): the corn-dip clip, scrubbed by the scroll in both directions, takes the corn into the water — splash, sinking, bubbles — while the camera eases down with it.
 
 **One corn, one size, one continuous fall.** The Figma corn (`corn-cob.png`) is drawn by the canvas throughout, at the clip's scale (kernel widths matched, so nothing zooms). The clip starts scrubbing at exactly the speed the approach's fall ends with (Hermite time-warp, `m0` in the renderer), so the corn never stops; adjacent frames are cross-faded so slow scrolling stays smooth. Above the surface the Figma corn rides the clip corn's measured pose (drop by phase correlation, tilt about its middle) and is cut at the water line; under it, the clip shows the corn at the same size. Over frames 16–21 the painted frames cross-fade into the originals while the Figma corn fades, so the clip's corn takes over as it goes under.
@@ -96,7 +96,9 @@ Split section like Harvest: title, statement (word by word) and Learn more on th
 
 ## Freeze fast. Keep more (freeze-fast)
 
-Figma draws this frame twice: the clear IQF bag of frozen kernels, and 820px lower the same composition with the branded Madhusudan pack. It is built as one pinned screen: `ScrollScene` gives the section a 230svh track and writes `--progress`; the stage sticks for the whole track and a frost line sweeps down the product, turning the bag (below the line) into the pack (above it) between 20% and 75% of the scroll. Title, dot grid and glass cards stay put with a little parallax. The glow is Figma's radial (centre 715, 363; radius 978.5), scaled by the width horizontally so wide screens keep Figma's tinted corners, and the stage's bottom blends into the cream section colour.
+Figma draws this frame twice: the clear IQF bag of frozen kernels, and 820px lower the same composition with the branded Madhusudan pack. It is built as one pinned screen: `ScrollScene` gives the section a 230svh track and writes `--progress`; the stage sticks for the whole track and, between 18% and 68% of the scroll, the bag turns round about its vertical axis and its back is the pack (CSS 3D: two faces 36u apart with `backface-visibility: hidden`, a thin side shown only around 90° so the pouch never flattens into a line, a small lift and edge-on shading; `--turn` is derived from `--progress` in CSS, so it reverses on the way up). Title, dot grid and glass cards stay put with a little parallax.
+
+**Into Product universe.** Once the scene unpins, `PackFlight` sets the pack down in the first product card. It finds three elements by data attribute — the track (`data-flight-track`), the pack face (`data-flight-source`) and the first card's pack (`data-flight-target`, the same `sweet-corn.png`) — and moves a copy of the pack between their live positions on every scroll frame: it leaves moving with the scene, shrinks and crosses a little ahead of dropping, and lands (card's pack at 58% of the screen) exactly on the card's own pack, which then shows. The copy is portalled to `<body>` because the sections' `container-type` would otherwise be its containing block. Scroll-driven, so it runs backwards too; reduced motion skips it. The glow is Figma's radial (centre 715, 363; radius 978.5), scaled by the width horizontally so wide screens keep Figma's tinted corners, and the stage's bottom blends into the cream section colour.
 
 - `iqf-bag.png` is Figma's image 25 (1024 × 1536).
 - `assets/products/sweet-corn.png` (shared with Product universe) replaces Figma's image 26, which is only 180 × 215 (the hero thumbnail) and turns soft at 674px. It was cut from the hero corn clip's pack reveal: the pack is keyed off the red backdrop, squared up with a four-corner perspective warp, colour-matched to Figma's pack art and placed on Figma's canvas proportions. **Swap in the print artwork** when the client supplies it (same 180:215 canvas, pack body inset like Figma's).
