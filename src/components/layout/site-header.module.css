@@ -75,25 +75,14 @@
   line-height: 1;
 }
 
-.leaves {
-  width: calc(var(--s, 1vw) * 3.1);
-  height: auto;
-  margin-bottom: calc(var(--s, 1vw) * -0.25);
-}
-
-.wordmark {
-  font-family: var(--font-geist), system-ui, sans-serif;
-  font-weight: 700;
-  font-size: calc(var(--s, 1vw) * 1.6);
-  letter-spacing: 0.02em;
-}
-
-.subline {
-  font-family: var(--font-poppins), system-ui, sans-serif;
-  font-weight: 300;
-  font-size: max(6px, calc(var(--s, 1vw) * 0.5));
-  letter-spacing: 0.08em;
-  margin-top: 0.15em;
+/* Madhusudan ribbon (its "Since - 1992" stays legible at this size); the hero's copy shadow keeps
+   it clear of the brightest footage */
+.logoImg {
+  display: block;
+  width: auto;
+  height: calc(var(--s, 1vw) * 5.2);
+  max-width: none;
+  filter: drop-shadow(0 1px 10px rgba(0, 0, 0, 0.22));
 }
 
 @keyframes headerIn {
@@ -120,17 +109,8 @@
     font-size: 11px;
   }
 
-  .leaves {
-    width: 30px;
-    margin-bottom: -2px;
-  }
-
-  .wordmark {
-    font-size: 15px;
-  }
-
-  .subline {
-    font-size: 6px;
+  .logoImg {
+    height: 42px;
   }
 }
 

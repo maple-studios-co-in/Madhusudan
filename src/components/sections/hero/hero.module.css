@@ -634,16 +634,18 @@
     bottom: auto;
     order: 6;
     margin-top: clamp(28px, 6vh, 56px);
-    padding: 0;
-    gap: 10px 20px;
+    padding: 0 16px;
+    flex-wrap: nowrap;
+    gap: 0 min(20px, 4vw);
   }
 
+  /* one row of five on any phone */
   .partnerWordmark {
-    font-size: 22px;
+    font-size: min(22px, 4.4vw);
   }
 
   .partnerLogo {
-    height: 36px;
+    height: min(36px, 7.2vw);
   }
 }
 

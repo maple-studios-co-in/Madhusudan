@@ -63,7 +63,7 @@ const MOTION: DipMotion = { approachDrop: 0.08, settleY: 0.55, sunkY: 500, filmE
 
 /* Mirrors better-way.module.css: --u1 = min(100cqw / 1430, 100svh / 1045),
    .corn box 819.72 tall at the top centre, image 458.754 wide. */
-const LAYOUT: DipLayout = { unitWidth: 1430, unitHeight: 1045, boxHeight: 819.72, imageWidth: 458.754 };
+const LAYOUT: DipLayout = { unitWidth: 1430, unitHeight: 1045, boxTop: 0, boxHeight: 819.72, imageWidth: 458.754 };
 
 /** share of the pinned scroll spent before the clip takes over (copy leaves, water rises) */
 const APPROACH_END = 0.4;
@@ -84,13 +84,13 @@ type Props = {
 /**
  * "How much could you grow" as one pinned screen (desktop): while the page is
  * held, the copy and cards travel up and off the screen, the water rises, and
- * the corn — the crisp Figma corn — moves down into it; the dip clip, scrubbed
- * by the scroll in both directions, then drowns it. Phones get the static
- * layout (see BetterWay).
+ * the crisp Figma corn falls into it; the dip clip, scrubbed by the scroll in
+ * both directions, then drowns it. Phones get the static layout (see BetterWay).
  */
 export default function CornDipScene({ cornSrc, stageClassName, wordmark, children }: Props) {
   const trackRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
+  const viewRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const rendererRef = useRef<CornDipRenderer | null>(null);
   const progressRef = useRef(0);
@@ -98,8 +98,9 @@ export default function CornDipScene({ cornSrc, stageClassName, wordmark, childr
   useEffect(() => {
     const canvas = canvasRef.current;
     const stage = stageRef.current;
+    const view = viewRef.current;
     const track = trackRef.current;
-    if (!canvas || !stage || !track) return;
+    if (!canvas || !stage || !view || !track) return;
     const mq = window.matchMedia(DESKTOP);
     let io: IntersectionObserver | null = null;
     let ro: ResizeObserver | null = null;
@@ -114,11 +115,11 @@ export default function CornDipScene({ cornSrc, stageClassName, wordmark, childr
     const start = () => {
       stop();
       if (!mq.matches) return;
-      const renderer = new CornDipRenderer(canvas, stage, LAYOUT, FILM, { ...CORN, src: cornSrc }, MOTION, APPROACH_END);
+      const renderer = new CornDipRenderer(canvas, stage, view, LAYOUT, FILM, { ...CORN, src: cornSrc }, MOTION, APPROACH_END);
       rendererRef.current = renderer;
       renderer.setProgress(progressRef.current);
       ro = new ResizeObserver(() => renderer.resize());
-      ro.observe(stage);
+      ro.observe(view);
       // fetch a couple of screens ahead of the section
       io = new IntersectionObserver(
         ([entry]) => {
@@ -154,9 +155,11 @@ export default function CornDipScene({ cornSrc, stageClassName, wordmark, childr
   return (
     <div ref={trackRef} className={styles.track}>
       <div ref={stageRef} className={`${styles.stage} ${stageClassName ?? ""}`}>
-        <canvas ref={canvasRef} className={styles.film} aria-hidden />
-        <div className={styles.band} aria-hidden>
-          {wordmark}
+        <div ref={viewRef} className={styles.view}>
+          <canvas ref={canvasRef} className={styles.film} aria-hidden />
+          <div className={styles.band} aria-hidden>
+            {wordmark}
+          </div>
         </div>
         <div className={styles.content}>{children}</div>
       </div>

@@ -56,12 +56,14 @@ export default function ProductUniverse() {
                   "--ph": product.packSize.height,
                 })}
               >
-                <div className={styles.packSlot}>
+                {/* the first pack is set down here by Freeze fast's PackFlight */}
+                <div className={styles.packSlot} data-flight-slot={i === 0 || undefined}>
                   <Image
                     src={product.pack}
                     alt={`Madhusudan ${product.name} pack`}
                     sizes="(min-width: 1024px) 19vw, 60vw"
                     className={styles.pack}
+                    data-flight-target={i === 0 || undefined}
                   />
                 </div>
                 <h3 className={styles.name}>{product.name}</h3>

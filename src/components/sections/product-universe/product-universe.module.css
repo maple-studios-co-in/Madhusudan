@@ -237,24 +237,77 @@
   translate: -50% calc(-50% + var(--u) * 36);
 }
 
+/* the first pack is delivered by Freeze fast's PackFlight, not faded in */
+.card[data-inview="false"] .packSlot[data-flight-slot] {
+  opacity: 1;
+  translate: -50% -50%;
+}
+
 /* ------------------------------------------------------------------ */
-/* Phones / tablets (full pass later): one column                       */
+/* Phones / tablets: a swipe row of cards                               */
 /* ------------------------------------------------------------------ */
 
 @media (max-width: 1023px) {
+  /* one card is 78% of the screen; the next one peeks in to invite a swipe */
   .section {
-    --u: calc(100cqw / 500);
+    --u: calc(78cqw / 442);
     width: 100%;
+    padding: 56px 0 64px;
+  }
+
+  .head {
+    padding: 0 20px;
+  }
+
+  .eyebrow {
+    font-size: 13px;
+    letter-spacing: 3px;
   }
 
   .title {
-    font-size: calc(var(--u) * 54);
+    margin-top: 10px;
+    font-size: clamp(32px, 9.5cqw, 46px);
   }
 
+  /* a native swipe row (scroll snap, no script); the top padding is the room
+     the packs need where they break out of their cards */
   .grid {
-    grid-template-columns: 1fr;
-    row-gap: calc(var(--u) * 190);
-    margin-top: calc(var(--u) * 200);
+    grid-template-columns: none;
+    grid-auto-flow: column;
+    grid-auto-columns: calc(var(--u) * 442);
+    column-gap: 14px;
+    row-gap: 0;
+    margin: 0;
+    padding: calc(var(--u) * 150) 20px 8px;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: 20px;
+    scrollbar-width: none;
+  }
+
+  .grid::-webkit-scrollbar {
+    display: none;
+  }
+
+  .item {
+    scroll-snap-align: start;
+  }
+
+  /* cards off to the side never reach the reveal threshold, so show them all:
+     the peeking card is what says "swipe" */
+  .card[data-inview="false"] {
+    opacity: 1;
+    translate: none;
+  }
+
+  .card[data-inview="false"] .packSlot {
+    opacity: 1;
+    translate: -50% -50%;
+  }
+
+  .blurb {
+    font-size: 11px;
   }
 }
 

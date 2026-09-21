@@ -1,11 +1,15 @@
 /*
- * Pinned corn-dip scene (desktop ≥ 1024px). The track is the screen plus
- * 280svh of scroll: 40% approach (copy up and away, water rising, corn starting
- * to fall), 60% film (scrubbed frame sequence). The renderer writes --a
- * (approach 0…1, linear: the copy scrolls away at page speed) and --w (the
- * water's rise, easing into place) on the stage; the DOM layers follow them
- * here. The canvas paints the water and the corn with plain (normal) blending,
- * so the corn stays crystal clear.
+ * Pinned corn-dip scene.
+ *
+ * Desktop (≥ 1024px): the track is the screen plus 280svh of scroll and the
+ * whole stage sticks: 40% approach (copy up and away, water rising, corn
+ * starting to fall), 60% film (scrubbed frame sequence). The canvas and the
+ * wordmark (.view) fill the stage under the copy. Phones: static, no film here.
+ *
+ * The renderer writes --a (approach 0…1, linear: the copy scrolls away at page
+ * speed) and --w (the water's rise, easing into place) on the stage; the DOM
+ * layers follow them here. The canvas paints the water and the corn with plain
+ * (normal) blending, so the corn stays crystal clear.
  */
 
 .track {
@@ -19,6 +23,11 @@
   height: 100svh;
   overflow: hidden;
   isolation: isolate;
+}
+
+.view {
+  position: absolute;
+  inset: 0;
 }
 
 .film {
@@ -61,8 +70,7 @@
     height: auto;
   }
 
-  .film,
-  .band {
+  .view {
     display: none;
   }
 

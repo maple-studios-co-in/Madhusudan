@@ -1,24 +1,21 @@
+import Image from "next/image";
 import Link from "next/link";
-import { NAVIGATION, SITE } from "@/data/navigation";
+import madhusudanLogo from "@/assets/brand/madhusudan-logo.png";
+import { NAVIGATION } from "@/data/navigation";
 import styles from "./site-header.module.css";
 
-/** Two leaves above the wordmark — placeholder for the supplied brand mark. */
+/** Madhusudan brand mark; "Since - 1992" and ® set in the hero's cream (see README). */
 function BrandLogo() {
   return (
-    <Link href="/" className={styles.logo} aria-label={`${SITE.name} home`}>
-      <svg className={styles.leaves} viewBox="0 0 64 40" aria-hidden focusable="false">
-        <path
-          d="M31 39C31 22 20 9 3 6c1 17 12 29 28 33Z"
-          fill="#6fb43f"
-        />
-        <path
-          d="M33 39c0-17 11-30 28-33-1 17-12 29-28 33Z"
-          fill="#2f9bd6"
-        />
-        <path d="M31 39c-4-10-10-18-18-24M33 39c4-10 10-18 18-24" stroke="rgba(255,255,255,.45)" strokeWidth="1.2" fill="none" />
-      </svg>
-      <span className={styles.wordmark}>{SITE.shortName}</span>
-      <span className={styles.subline}>{SITE.tagline}</span>
+    <Link href="/" className={styles.logo}>
+      <Image
+        src={madhusudanLogo}
+        alt="Madhusudan home"
+        sizes="(min-width: 1024px) 14vw, 120px"
+        loading="eager"
+        fetchPriority="high"
+        className={styles.logoImg}
+      />
     </Link>
   );
 }

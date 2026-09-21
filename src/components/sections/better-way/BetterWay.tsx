@@ -36,10 +36,11 @@ const CARDS = [
   },
 ];
 
+/** the brand wordmark in Figma's band (Figma sets "smcagri"; the brand is Madhusudan) */
 function Wordmark() {
   return (
     <div className={styles.wordmarkBand}>
-      <span className={styles.wordmark}>smcagri</span>
+      <span className={styles.wordmark}>madhusudan</span>
     </div>
   );
 }
@@ -48,7 +49,7 @@ function Wordmark() {
  * "How much could you grow" — Figma SMCAGRI 68:3808 / 68:3809.
  *
  * Desktop: one pinned screen (CornDipScene). The title, pitch and cards travel
- * up and away while the corn hangs still, the water and the smcagri wordmark
+ * up and away while the corn hangs still, the water and the madhusudan wordmark
  * rise, and the corn-dip film — scrubbed by the scroll — drops the corn in.
  * Phones: the two-screen layout (title/corn/pitch/cards, then the film).
  */

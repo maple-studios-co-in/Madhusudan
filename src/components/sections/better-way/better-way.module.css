@@ -3,7 +3,7 @@
  *
  * One Figma px per layer:
  *   --u1 = min(width scale, 100svh / 1045)   copy: title, pitch, cards (+ phone corn)
- *   --u2 = min(width scale, 100svh / 804)    smcagri wordmark band
+ *   --u2 = min(width scale, 100svh / 804)    brand wordmark band
  * Figma's first screen is 1296px tall; to fit one screen without shrinking the
  * copy the cards sit 273px higher (800 vs 1073). Horizontal positions keep
  * Figma anchors: title from the left edge, pitch from the right, cards across.
@@ -219,28 +219,35 @@
 }
 
 /* ------------------------------------------------------------------ */
-/* smcagri wordmark (Figma 68:3963: shows through a 175px band)          */
+/* Brand wordmark (Figma 68:3963: shows through a 175px band)           */
 /* ------------------------------------------------------------------ */
 
+/* Figma sets "smcagri"; the band carries the brand, "madhusudan", scaled by
+   --wm so it spans the same width (10 letters against 7: 0.636 measured in
+   Geist with the tracking) and bleeds off the bottom in the same proportion.
+   Its d and h rise above the x-height, so the band reaches 70 (scaled) higher
+   than Figma's 175 and the text moves down with it: the bottom cut is unchanged. */
 .wordmarkBand {
+  --wm: 0.636;
+
   position: absolute;
   left: 0;
   right: 0;
   bottom: 0;
-  height: calc(var(--u2) * 175);
+  height: calc(var(--u2) * 245 * var(--wm));
   overflow: hidden;
 }
 
 .wordmark {
   position: absolute;
-  left: calc(50% - var(--u2) * 9);
-  top: calc(var(--u2) * -69.17);
+  left: calc(50% - var(--u2) * 9 * var(--wm));
+  top: calc(var(--u2) * 0.83 * var(--wm));
   translate: -50% 0;
   font-family: var(--font-geist), system-ui, sans-serif;
   font-weight: 500;
-  font-size: calc(var(--u2) * 307.68);
-  line-height: calc(var(--u2) * 285.932);
-  letter-spacing: calc(var(--u2) * 39);
+  font-size: calc(var(--u2) * 307.68 * var(--wm));
+  line-height: calc(var(--u2) * 285.932 * var(--wm));
+  letter-spacing: calc(var(--u2) * 39 * var(--wm));
   white-space: nowrap;
   color: transparent;
   background: linear-gradient(89.83deg, rgba(255, 255, 255, 0.6) 1%, rgba(255, 255, 255, 0) 144.86%);
