@@ -1,8 +1,10 @@
 export const SITE = {
-  name: "SMC Agri Limited",
-  /** footer legal name (Figma 119:790) */
-  legalName: "SMC Limited",
-  email: "info@smcagri.com",
+  name: "Madhusudan",
+  shortName: "Madhusudan",
+  tagline: "",
+  /** footer copyright name (Figma 119:790) */
+  legalName: "Madhusudan",
+  email: "",
 } as const;
 
 export const NAVIGATION = {

@@ -12,7 +12,7 @@ const tile = (vars: Record<string, string | number>) => vars as CSSProperties;
 
 /* Figma 119:847, with the line breaks of the design render (title-cased by the design). */
 const BODY = [
-  "Since 1991, SMC Agri has built its business around bringing",
+  "Since 1991, Madhusudan has built its business around bringing",
   "quality agricultural produce from farm to table — combining",
   "agricultural expertise, processing technology and food-safety",
   "systems.",

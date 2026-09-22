@@ -16,8 +16,8 @@ const PROCESS = [
   "Our IQF process freezes individual",
   "pieces quickly, helping preserve the",
   "taste, texture and nutritional",
-  "qualities SMC associates with its",
-  "frozen produce.",
+  "qualities Madhusudan is known for",
+  "in its frozen produce.",
 ];
 
 /**
@@ -91,8 +91,7 @@ export default function FreezeFast() {
               <div className={`${styles.card} ${styles.cardStat}`} style={delay(0.35)}>
                 <p className={styles.statTitle}>6 IQF lines</p>
                 <p className={styles.statRate}>12 MT / hour / line</p>
-                {/* Figma placeholder line, kept until the copy is supplied */}
-                <p className={styles.statNote}>Small technical statement</p>
+                <p className={styles.statNote}>Frozen at −18 °C and kept there</p>
                 <p className={`${styles.statNote} ${styles.caps}`}>Individually quick frozen</p>
               </div>
 

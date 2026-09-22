@@ -10,12 +10,12 @@ import styles from "./harvest.module.css";
 
 const delay = (seconds: number): CSSProperties => ({ "--d": `${seconds}s` }) as CSSProperties;
 
-/** Figma line breaks of the small print (node 66:3526), one entry per line. */
+/** Small print (Figma node 66:3526), one entry per line to keep the design's line breaks. */
 const BODY_LINES = [
-  "Most of what you apply never reaches your crops. It",
-  "evaporates, washes away, or gets locked in the soil —",
-  "leaving you with lower yields, more spraying, and",
-  "higher costs.",
+  "Fresh produce starts losing sweetness, texture and",
+  "nutrients within hours of harvest — on the truck, in",
+  "the market, on the shelf. By the time it reaches a",
+  "kitchen, much of what made it good is gone.",
 ];
 
 /**
@@ -46,12 +46,12 @@ export default function Harvest() {
             <p className={styles.mediaTitle}>
               <span className={styles.line}>
                 <span className={styles.lineInner} style={delay(0)}>
-                  Most fertilizers never
+                  Most vegetables lose
                 </span>
               </span>
               <span className={styles.line}>
                 <span className={styles.lineInner} style={delay(0.1)}>
-                  make it to your plants
+                  their best on the way
                 </span>
               </span>
             </p>

@@ -7,14 +7,13 @@ import styles from "./move-fast.module.css";
 
 const delay = (seconds: number): CSSProperties => ({ "--d": `${seconds}s` }) as CSSProperties;
 
-/* Figma 103:4253, with its line breaks. Still the reference site's copy
-   ("Farm Minerals", fertilisers) — replace with SMC's before launch. */
-const LEAD = ["Most ag companies pay to offset their emissions."];
+/* Figma 103:4253, with its line breaks; line lengths kept close to the design's. */
+const LEAD = ["Freshness has a clock. We work against it."];
 const BODY = [
-  "With Farm Minerals, you don’t have to. Our fertilizers",
-  "are made clean from the start — so you can lower",
-  "your footprint without buying credits or paying",
-  "compliance fees.",
+  "From the field to the freezer, every step is built",
+  "to move quickly — because every hour between",
+  "harvest and freezing is flavour and nutrition",
+  "quietly lost.",
 ];
 
 /**

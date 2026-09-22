@@ -1,12 +1,10 @@
-import Image from "next/image";
 import Link from "next/link";
-import logo from "@/assets/brand/smc-logo.png";
 import { FOOTER, SITE } from "@/data/navigation";
 import styles from "./site-footer.module.css";
 
 /**
  * Site footer — Figma SMCAGRI 119:773 (1430 × 236).
- * Brand, two link columns, the contact block (the page's `#contact` target),
+ * Brand name, two link columns, the contact block (the page's `#contact` target),
  * LinkedIn, and a bottom row with the copyright, legal links and credit.
  */
 export default function SiteFooter() {
@@ -14,7 +12,7 @@ export default function SiteFooter() {
     <footer className={styles.shell}>
       <div className={styles.footer}>
         <Link href="/" className={styles.logo} aria-label={`${SITE.name} home`}>
-          <Image src={logo} alt="" sizes="160px" className={styles.logoImg} />
+          {SITE.name}
         </Link>
 
         <nav className={styles.nav} aria-label="Footer">
@@ -40,8 +38,8 @@ export default function SiteFooter() {
             <br />
             {FOOTER.contactNote[1]}
           </p>
-          <a href={`mailto:${SITE.email}`} className={`${styles.link} ${styles.email}`}>
-            {SITE.email}
+          <a href="#contact" className={`${styles.link} ${styles.email}`}>
+            Contact us
           </a>
         </div>
 

@@ -1,6 +1,6 @@
-# Madhusudhan — brand website
+# Madhusudan — brand website
 
-Marketing site for Madhusudhan / SMC Agri Limited, implemented from the
+Marketing site for Madhusudan / SMC Agri Limited, implemented from the
 [SMCAGRI Figma file](https://www.figma.com/design/sgFTPPaJyPOqnS58JZ9FvM/SMCAGRI).
 
 ## Stack

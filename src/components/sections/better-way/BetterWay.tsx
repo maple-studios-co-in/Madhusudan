@@ -11,28 +11,28 @@ import styles from "./better-way.module.css";
 
 const delay = (seconds: number): CSSProperties => ({ "--d": `${seconds}s` }) as CSSProperties;
 
-/* Copy and line breaks as in Figma (68:3809). The pitch and the cards still carry
-   the reference site's product copy (CropTab™ is that company's trademark). */
-const TITLE = ["How much could you", "grow — if nothing was", "wasted?"];
+/* Line breaks as in Figma (68:3809); line lengths kept close to the design's so the
+   reveal timing and wrapping hold. */
+const TITLE = ["What if the harvest", "arrived exactly as it", "was picked?"];
 const PITCH_TITLE = ["We found a", "better way"];
 const PITCH_BODY = [
-  "Meet CropTab™. Powered by precision-",
-  "engineered carbon capsules, it marks",
-  "the first major innovation in fertilizers",
-  "in over 35 years.",
+  "Individually quick freezing locks",
+  "each piece within hours of harvest —",
+  "the taste, colour and nutrition of the",
+  "field, kept until you need them.",
 ];
 const CARDS = [
   {
-    title: ["Smaller than a plant cell"],
-    body: ["Engineered to pass through the", "surface and deliver nutrients from", "within."],
+    title: ["Frozen in hours"],
+    body: ["Picked, cleaned and frozen at the", "plant while the crop is still at its", "best."],
   },
   {
-    title: ["Effortlessly integrative"],
-    body: ["No new tools. No learning curve. Just a", "smarter way to get the same job done", "— with less waste and zero emissions."],
+    title: ["No added preservatives"],
+    body: ["Cold is the only preservative. Nothing", "is added to keep it fresh, because it", "never had the chance to go stale."],
   },
   {
-    title: ["Zero manufacturing", "emissions"],
-    body: ["We completely bypass the Haber-Bosch", "process — no CO₂, no NOₓ, zero compromise."],
+    title: ["Ready when", "you are"],
+    body: ["No washing, peeling or chopping. From", "freezer to pan in minutes, any day of the year."],
   },
 ];
 
@@ -49,7 +49,7 @@ function Wordmark() {
  * "How much could you grow" — Figma SMCAGRI 68:3808 / 68:3809.
  *
  * Desktop: one pinned screen (CornDipScene). The title, pitch and cards travel
- * up and away while the corn hangs still, the water and the madhusudan wordmark
+ * up and away while the corn hangs still, the water and the Madhusudan wordmark
  * rise, and the corn-dip film — scrubbed by the scroll — drops the corn in.
  * Phones: the two-screen layout (title/corn/pitch/cards, then the film).
  */

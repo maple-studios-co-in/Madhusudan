@@ -150,8 +150,8 @@ export default function Hero() {
         </p>
 
         <p className={styles.blurb}>
-          SMC Agri Limited is a pioneer in delivering the highest quality frozen
-          fruits and vegetables from its farms to your table, embodying a{" "}
+          Madhusudan brings the highest quality frozen vegetables from its farms
+          to your table, carrying forward a{" "}
           <strong>legacy of agricultural excellence since 1991.</strong>
         </p>
 

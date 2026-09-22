@@ -32,9 +32,9 @@ const kulimPark = Kulim_Park({
 });
 
 export const metadata: Metadata = {
-  title: "Madhusudhan | Picked at their peak. Locked in at their best.",
+  title: "Madhusudan | Picked at their peak. Locked in at their best.",
   description:
-    "SMC Agri Limited is a pioneer in delivering the highest quality frozen fruits and vegetables from its farms to your table, embodying a legacy of agricultural excellence since 1991.",
+    "Madhusudan frozen vegetables: picked at their peak, individually quick frozen within hours, and delivered from farm to freezer with no added preservatives. A legacy of agricultural excellence since 1991.",
 };
 
 export const viewport: Viewport = {

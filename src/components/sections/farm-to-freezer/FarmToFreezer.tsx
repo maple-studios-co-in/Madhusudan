@@ -68,9 +68,10 @@ export default function FarmToFreezer() {
           </ScrollProgress>
 
           <div className={styles.card}>
-            <p className={styles.cardTitle}>Just drop it</p>
+            <p className={styles.cardTitle}>Picked, not stored</p>
             <p className={styles.cardBody}>
-              No new equipment needed. Just drop it into water — it dissolves evenly on its own.
+              Harvested at the right moment and taken straight to the plant, so nothing sits around
+              losing its sweetness.
             </p>
           </div>
         </RevealOnScroll>
